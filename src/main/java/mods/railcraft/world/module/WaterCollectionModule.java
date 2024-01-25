@@ -52,7 +52,7 @@ public class WaterCollectionModule extends ContainerModule<BlockModuleProvider> 
 
   @Override
   public void serverTick() {
-    var level = this.provider.level();
+    var level = this.provider.getLevel();
     if (this.refillTicks++ >= REFILL_INTERVAL) {
       this.refillTicks = 0;
       var above = this.provider.blockPos().above();

@@ -27,7 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
@@ -92,7 +92,7 @@ public abstract class MaintenanceMinecart extends RailcraftMinecart {
   @Override
   public void tick() {
     super.tick();
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       return;
     }
 
@@ -127,7 +127,7 @@ public abstract class MaintenanceMinecart extends RailcraftMinecart {
   protected boolean placeNewTrack(BlockPos pos, int slotStock, RailShape railShape) {
     ItemStack trackStack = getItem(slotStock);
     if (!trackStack.isEmpty()) {
-      if (TrackUtil.placeRailAt(trackStack, (ServerLevel) this.level(), pos, railShape)) {
+      if (TrackUtil.placeRailAt(trackStack, (ServerLevel) this.getLevel(), pos, railShape)) {
         this.removeItem(slotStock, 1);
         this.blink();
         return true;
@@ -137,7 +137,7 @@ public abstract class MaintenanceMinecart extends RailcraftMinecart {
   }
 
   protected RailShape removeOldTrack(BlockPos pos, BlockState state) {
-    var drops = state.getDrops(new LootParams.Builder((ServerLevel) this.level())
+    var drops = state.getDrops(new LootContext.Builder((ServerLevel) this.getLevel())
         .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
         .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos)));
 
@@ -146,7 +146,7 @@ public abstract class MaintenanceMinecart extends RailcraftMinecart {
       rollingStock.offerOrDropItem(stack);
     }
     var trackShape = TrackUtil.getRailShapeRaw(state);
-    this.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+    this.getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
     return trackShape;
   }
 

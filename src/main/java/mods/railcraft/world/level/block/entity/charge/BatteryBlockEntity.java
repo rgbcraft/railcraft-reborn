@@ -27,7 +27,7 @@ public class BatteryBlockEntity extends RailcraftBlockEntity {
   }
 
   private Optional<? extends ChargeStorage> storage() {
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       return Optional.empty();
     }
     return Charge.distribution

@@ -229,7 +229,7 @@ public class ForceTrackEmitterBlockEntity extends RailcraftBlockEntity implement
   }
 
   private Optional<? extends ChargeStorage> storage() {
-    return this.level().isClientSide() ? Optional.empty() : this.access().storage();
+    return this.getLevel().isClientSide() ? Optional.empty() : this.access().storage();
   }
 
   private Charge.Access access() {

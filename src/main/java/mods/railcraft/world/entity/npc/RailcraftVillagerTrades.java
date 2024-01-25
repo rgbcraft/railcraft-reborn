@@ -289,7 +289,7 @@ public class RailcraftVillagerTrades {
         return null;
       }
       var stack = current.get(random.nextInt(current.size()))
-          .create(trader.level())
+          .create(trader.getLevel())
           .getPickResult();
 
       int size = random.nextIntBetweenInclusive(priceLow, priceHigh);

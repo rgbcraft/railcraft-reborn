@@ -60,7 +60,7 @@ public class TrackUndercutter extends MaintenancePatternMinecart {
   @Override
   public void tick() {
     super.tick();
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       return;
     }
     if (this.mode() == Mode.OFF) {
@@ -70,16 +70,16 @@ public class TrackUndercutter extends MaintenancePatternMinecart {
     this.stockItems(SLOT_REPLACE_SIDE, SLOT_STOCK_SIDE);
 
     var pos = BlockPos.containing(this.position());
-    if (BaseRailBlock.isRail(this.level(), pos.below())) {
+    if (BaseRailBlock.isRail(this.getLevel(), pos.below())) {
       pos = pos.below();
     }
 
-    var blockState = this.level().getBlockState(pos);
+    var blockState = this.getLevel().getBlockState(pos);
     if (!BaseRailBlock.isRail(blockState)) {
       return;
     }
 
-    var railShape = TrackUtil.getTrackDirection(this.level(), pos, blockState, this);
+    var railShape = TrackUtil.getTrackDirection(this.getLevel(), pos, blockState, this);
     pos = pos.below();
 
     var slotAEmpty = true;
@@ -135,18 +135,18 @@ public class TrackUndercutter extends MaintenancePatternMinecart {
       return;
     }
 
-    var oldState = this.level().getBlockState(pos);
+    var oldState = this.getLevel().getBlockState(pos);
 
     if (!blockMatches(oldState, existingTrack)) {
       return;
     }
 
     if (this.safeToReplace(pos)) {
-      var stockBlock = ContainerTools.getBlockStateFromStack(stockTrack, this.level(), pos);
-      var drops = Block.getDrops(oldState, (ServerLevel) this.level(), pos,
-          this.level().getBlockEntity(pos));
-      if (stockBlock != null && this.level().setBlockAndUpdate(pos, stockBlock)) {
-        this.level().playSound(null, pos, stockBlock.getSoundType().getPlaceSound(),
+      var stockBlock = ContainerTools.getBlockStateFromStack(stockTrack, this.getLevel(), pos);
+      var drops = Block.getDrops(oldState, (ServerLevel) this.getLevel(), pos,
+          this.getLevel().getBlockEntity(pos));
+      if (stockBlock != null && this.getLevel().setBlockAndUpdate(pos, stockBlock)) {
+        this.getLevel().playSound(null, pos, stockBlock.getSoundType().getPlaceSound(),
             SoundSource.AMBIENT, (1f + 1.0F) / 2.0F, 0.8F);
 
         this.removeItem(stockSlot, 1);
@@ -161,14 +161,14 @@ public class TrackUndercutter extends MaintenancePatternMinecart {
 
   @SuppressWarnings("deprecation")
   private boolean safeToReplace(BlockPos pos) {
-    var blockState = this.level().getBlockState(pos);
+    var blockState = this.getLevel().getBlockState(pos);
     if (blockState.isAir()) {
       return false;
     }
     if (blockState.liquid()) {
       return false;
     }
-    if (blockState.getDestroySpeed(this.level(), pos) < 0) {
+    if (blockState.getDestroySpeed(this.getLevel(), pos) < 0) {
       return false;
     }
     return !TunnelBore.REPLACEABLE_BLOCKS.contains(blockState.getBlock());
@@ -219,7 +219,7 @@ public class TrackUndercutter extends MaintenancePatternMinecart {
       return false;
     }
 
-    return state.isSuffocating(trackUndercutter.level(),
+    return state.isSuffocating(trackUndercutter.getLevel(),
         trackUndercutter.blockPosition());
   }
 }

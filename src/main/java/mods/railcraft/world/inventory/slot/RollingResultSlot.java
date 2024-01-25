@@ -22,8 +22,8 @@ public class RollingResultSlot extends ResultSlot {
   @Override
   public void onTake(Player player, ItemStack stack) {
     this.checkTakeAchievements(stack);
-    var recipeRemainingItems = player.level().getRecipeManager()
-        .getRemainingItemsFor(RailcraftRecipeTypes.ROLLING.get(), this.craftSlots, player.level());
+    var recipeRemainingItems = player.getLevel().getRecipeManager()
+        .getRemainingItemsFor(RailcraftRecipeTypes.ROLLING.get(), this.craftSlots, player.getLevel());
     for (int i = 0; i < recipeRemainingItems.size(); ++i) {
       var itemstack = this.craftSlots.getItem(i);
       var itemstack1 = recipeRemainingItems.get(i);

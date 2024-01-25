@@ -38,7 +38,7 @@ public class RitualBlockRenderer implements BlockEntityRenderer<RitualBlockEntit
 
     int id = (int) blockEntity.getBlockPos().asLong();
     this.itemRenderer.renderStatic(firestone, ItemDisplayContext.NONE, packedLight, packedOverlay,
-        poseStack, bufferSource, blockEntity.level(), id);
+        poseStack, bufferSource, blockEntity.getLevel(), id);
     poseStack.popPose();
   }
 }

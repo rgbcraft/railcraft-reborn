@@ -86,7 +86,7 @@ public class TankMinecart extends FilteredMinecart
   public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
     super.onSyncedDataUpdated(key);
 
-    if (!this.level().isClientSide()) {
+    if (!this.getLevel().isClientSide()) {
       return;
     }
     if (key.equals(FLUID_STACK_TAG)) {
@@ -108,21 +108,21 @@ public class TankMinecart extends FilteredMinecart
   @Override
   public void remove(RemovalReason reason) {
     super.remove(reason);
-    Containers.dropContents(this.level(), this, this.invLiquids);
+    Containers.dropContents(this.getLevel(), this, this.invLiquids);
   }
 
   @Override
   public void tick() {
     super.tick();
 
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       return;
     }
 
-    ContainerTools.dropIfInvalid(this.level(), this.blockPosition(), this, SLOT_INPUT);
-    ContainerTools.drop(this.level(), this.blockPosition(), this, SLOT_PROCESSING,
+    ContainerTools.dropIfInvalid(this.getLevel(), this.blockPosition(), this, SLOT_INPUT);
+    ContainerTools.drop(this.getLevel(), this.blockPosition(), this, SLOT_PROCESSING,
         FluidItemHelper::isContainer);
-    ContainerTools.drop(this.level(), this.blockPosition(), this, SLOT_OUTPUT,
+    ContainerTools.drop(this.getLevel(), this.blockPosition(), this, SLOT_OUTPUT,
         FluidItemHelper::isContainer);
 
     if (this.fluidProcessingTimer++ >= FluidTools.BUCKET_FILL_TIME) {

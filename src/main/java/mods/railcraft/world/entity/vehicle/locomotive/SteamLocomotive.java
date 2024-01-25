@@ -78,7 +78,7 @@ public class SteamLocomotive extends BaseSteamLocomotive implements WorldlyConta
   public void tick() {
     super.tick();
 
-    if (this.level().isClientSide() || this.isRemoved()) {
+    if (this.getLevel().isClientSide() || this.isRemoved()) {
       return;
     }
     this.extraFuelContainer.moveOneItemTo(this.fuelContainer);

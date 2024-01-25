@@ -90,14 +90,14 @@ public abstract class RailcraftMinecart extends AbstractMinecartContainer
 
   @Override
   public InteractionResult interact(Player player, InteractionHand hand) {
-    if (!player.level().isClientSide()) {
+    if (!player.getLevel().isClientSide()) {
       if (this.hasMenu()) {
         NetworkHooks.openScreen((ServerPlayer) player, this,
             data -> data.writeVarInt(this.getId()));
       }
       PiglinAi.angerNearbyPiglins(player, true);
     }
-    return InteractionResult.sidedSuccess(this.level().isClientSide());
+    return InteractionResult.sidedSuccess(this.getLevel().isClientSide());
   }
 
   protected boolean hasMenu() {
@@ -106,7 +106,7 @@ public abstract class RailcraftMinecart extends AbstractMinecartContainer
 
   @Override
   public void remove(RemovalReason reason) {
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       for (int slot = 0; slot < this.getContainerSize(); slot++) {
         this.setItem(slot, ItemStack.EMPTY);
       }
@@ -130,7 +130,7 @@ public abstract class RailcraftMinecart extends AbstractMinecartContainer
   }
 
   protected void updateTravelDirection(BlockPos pos, BlockState state) {
-    var shape = TrackUtil.getTrackDirection(this.level(), pos, state);
+    var shape = TrackUtil.getTrackDirection(this.getLevel(), pos, state);
 
     var direction = this.determineTravelDirection(shape);
     var lastDirection = this.travelDirectionHistory[1];

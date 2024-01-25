@@ -1,6 +1,8 @@
 package mods.railcraft.world.item;
 
 import java.util.List;
+
+import net.minecraft.core.NonNullList;
 import org.jetbrains.annotations.NotNull;
 import mods.railcraft.Translations;
 import mods.railcraft.world.entity.FirestoneItemEntity;
@@ -20,109 +22,110 @@ import net.minecraft.world.level.block.BaseFireBlock;
 
 public class FirestoneItem extends Item {
 
-  private final boolean spawnsFire;
+    private final boolean spawnsFire;
 
-  public FirestoneItem(boolean spawnsFire, Properties properties) {
-    super(properties);
-    this.spawnsFire = spawnsFire;
-  }
-
-  public boolean spawnsFire() {
-    return this.spawnsFire;
-  }
-
-  @Override
-  public boolean hasCustomEntity(ItemStack itemStack) {
-    return true;
-  }
-
-  @Override
-  @NotNull
-  public FirestoneItemEntity createEntity(Level level, Entity entity, ItemStack itemStack) {
-    return createEntityItem(level, entity, itemStack);
-  }
-
-  @Override
-  public boolean isRepairable(ItemStack itemStack) {
-    return false;
-  }
-
-  @Override
-  public boolean isEnchantable(ItemStack itemStack) {
-    return false;
-  }
-
-  public void fillItemCategory(CreativeModeTab.Output output) {
-    output.accept(new ItemStack(this));
-    var item = new ItemStack(this);
-    if (item.isDamageableItem()) {
-      item.setDamageValue(item.getMaxDamage() - 1);
-      output.accept(item);
+    public FirestoneItem(boolean spawnsFire, Properties properties) {
+        super(properties);
+        this.spawnsFire = spawnsFire;
     }
-  }
 
-  @NotNull
-  public static FirestoneItemEntity createEntityItem(Level level, Entity entity,
-      ItemStack itemStack) {
-    var firestone = new FirestoneItemEntity(level, entity.position(), itemStack);
-    firestone.setThrower(entity.getUUID());
-    firestone.setDeltaMovement(entity.getDeltaMovement());
-    firestone.setDefaultPickUpDelay();
-    return firestone;
-  }
-
-  @Override
-  public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId,
-      boolean isSelected) {
-    if (this.spawnsFire
-        && !level.isClientSide()
-        && level.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)
-        && entity instanceof Player player
-        && level.getRandom().nextInt(12) % 4 == 0) {
-      trySpawnFire(player.level(), player.blockPosition(), stack, player);
+    public boolean spawnsFire() {
+        return this.spawnsFire;
     }
-  }
 
-  public static boolean trySpawnFire(Level level, BlockPos pos, ItemStack stack, Entity entity) {
-    boolean spawnedFire = false;
-    for (int i = 0; i < stack.getCount(); i++) {
-      spawnedFire |= spawnFire(level, pos);
+    @Override
+    public boolean hasCustomEntity(ItemStack itemStack) {
+        return true;
     }
-    if (spawnedFire && stack.isDamageableItem()
-        && stack.getDamageValue() < stack.getMaxDamage() - 1) {
-      if (entity instanceof Player player) {
-        stack.hurtAndBreak(1, player, t -> {});
-      }
+
+    @Override
+    @NotNull
+    public FirestoneItemEntity createEntity(Level level, Entity entity, ItemStack itemStack) {
+        return createEntityItem(level, entity, itemStack);
     }
-    return spawnedFire;
-  }
 
-  public static boolean spawnFire(Level level, BlockPos pos) {
-    var random = level.getRandom();
-    int x = pos.getX() - 5 + random.nextInt(12);
-    int y = pos.getY() + random.nextInt(12);
-    int z = pos.getZ() - 5 + random.nextInt(12);
-
-    y = Mth.clamp(y, level.getMinBuildHeight() + 2, level.getMaxBuildHeight() - 1);
-
-    var firePos = new BlockPos(x, y, z);
-    var blockState = BaseFireBlock.getState(level, firePos);
-    return level.getBlockState(firePos).isAir()
-        && blockState.canSurvive(level, firePos)
-        && level.setBlockAndUpdate(firePos, blockState);
-  }
-
-  @Override
-  public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents,
-      TooltipFlag isAdvanced) {
-    if (stack.is(RailcraftItems.RAW_FIRESTONE.get())) {
-      tooltipComponents
-          .add(Component.translatable(Translations.Tips.RAW_FIRESTONE)
-              .withStyle(ChatFormatting.GRAY));
-    } else if (stack.is(RailcraftItems.CUT_FIRESTONE.get())) {
-      tooltipComponents
-          .add(Component.translatable(Translations.Tips.CUT_FIRESTONE)
-              .withStyle(ChatFormatting.GRAY));
+    @Override
+    public boolean isRepairable(ItemStack itemStack) {
+        return false;
     }
-  }
+
+    @Override
+    public boolean isEnchantable(ItemStack itemStack) {
+        return false;
+    }
+
+    public void fillItemCategory(NonNullList<ItemStack> items) {
+        items.add(new ItemStack(this));
+        var item = new ItemStack(this);
+        if (item.isDamageableItem()) {
+            item.setDamageValue(item.getMaxDamage() - 1);
+            items.add(item);
+        }
+    }
+
+    @NotNull
+    public static FirestoneItemEntity createEntityItem(Level level, Entity entity,
+                                                       ItemStack itemStack) {
+        var firestone = new FirestoneItemEntity(level, entity.position(), itemStack);
+        firestone.setThrower(entity.getUUID());
+        firestone.setDeltaMovement(entity.getDeltaMovement());
+        firestone.setDefaultPickUpDelay();
+        return firestone;
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId,
+                              boolean isSelected) {
+        if (this.spawnsFire
+                && !level.isClientSide()
+                && level.getGameRules().getBoolean(GameRules.RULE_DOFIRETICK)
+                && entity instanceof Player player
+                && level.getRandom().nextInt(12) % 4 == 0) {
+            trySpawnFire(player.getLevel(), player.blockPosition(), stack, player);
+        }
+    }
+
+    public static boolean trySpawnFire(Level level, BlockPos pos, ItemStack stack, Entity entity) {
+        boolean spawnedFire = false;
+        for (int i = 0; i < stack.getCount(); i++) {
+            spawnedFire |= spawnFire(level, pos);
+        }
+        if (spawnedFire && stack.isDamageableItem()
+                && stack.getDamageValue() < stack.getMaxDamage() - 1) {
+            if (entity instanceof Player player) {
+                stack.hurtAndBreak(1, player, t -> {
+                });
+            }
+        }
+        return spawnedFire;
+    }
+
+    public static boolean spawnFire(Level level, BlockPos pos) {
+        var random = level.getRandom();
+        int x = pos.getX() - 5 + random.nextInt(12);
+        int y = pos.getY() + random.nextInt(12);
+        int z = pos.getZ() - 5 + random.nextInt(12);
+
+        y = Mth.clamp(y, level.getMinBuildHeight() + 2, level.getMaxBuildHeight() - 1);
+
+        var firePos = new BlockPos(x, y, z);
+        var blockState = BaseFireBlock.getState(level, firePos);
+        return level.getBlockState(firePos).isAir()
+                && blockState.canSurvive(level, firePos)
+                && level.setBlockAndUpdate(firePos, blockState);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
+        if (stack.is(RailcraftItems.RAW_FIRESTONE.get())) {
+            tooltipComponents
+                    .add(Component.translatable(Translations.Tips.RAW_FIRESTONE)
+                            .withStyle(ChatFormatting.GRAY));
+        } else if (stack.is(RailcraftItems.CUT_FIRESTONE.get())) {
+            tooltipComponents
+                    .add(Component.translatable(Translations.Tips.CUT_FIRESTONE)
+                            .withStyle(ChatFormatting.GRAY));
+        }
+    }
 }

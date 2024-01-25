@@ -133,7 +133,7 @@ public abstract class BaseSteamLocomotive extends Locomotive implements FluidTra
       return;
     }
 
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       this.clientTick();
       return;
     }
@@ -173,10 +173,10 @@ public abstract class BaseSteamLocomotive extends Locomotive implements FluidTra
       var z = this.getZ() - Math.sin(rads) * offset;
 
       if (Seasons.HALLOWEEN && this.random.nextInt(4) == 0) { // 20%?
-        this.level().addParticle(RailcraftParticleTypes.PUMPKIN.get(), x, y, z, 0, 0.02, 0);
+        this.getLevel().addParticle(RailcraftParticleTypes.PUMPKIN.get(), x, y, z, 0, 0.02, 0);
       } else {
         // smog obviously.
-        this.level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 0, 0.02, 0);
+        this.getLevel().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 0, 0.02, 0);
       }
     }
     // steam spawns ON the engine itself, spreading left or right
@@ -190,12 +190,12 @@ public abstract class BaseSteamLocomotive extends Locomotive implements FluidTra
       var vx = steamAngularSpeed * Math.cos(rads - ninetyDeg);
       var vz = steamAngularSpeed * Math.sin(rads - ninetyDeg);
 
-      this.level().addParticle(RailcraftParticleTypes.STEAM.get(),
+      this.getLevel().addParticle(RailcraftParticleTypes.STEAM.get(),
           this.getX() - Math.cos(rads + ninetyDeg) * offset, ycoord,
           this.getZ() - Math.sin(rads + ninetyDeg) * offset, vx,
           0.02 + (this.random.nextDouble() * 0.01), vz);
 
-      this.level().addParticle(RailcraftParticleTypes.STEAM.get(),
+      this.getLevel().addParticle(RailcraftParticleTypes.STEAM.get(),
           this.getX() - Math.cos(rads - ninetyDeg) * offset, ycoord,
           this.getZ() - Math.sin(rads - ninetyDeg) * offset, vx,
           0.02 + (this.random.nextDouble() * 0.01), vz);

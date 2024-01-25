@@ -15,7 +15,7 @@ public class CreosoteEffect extends MobEffect {
   @Override
   public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
     if (livingEntity.getMobType().equals(MobType.ARTHROPOD)) {
-      var registryAccess = livingEntity.level().registryAccess();
+      var registryAccess = livingEntity.getLevel().registryAccess();
       livingEntity.hurt(RailcraftDamageSources.creosote(registryAccess),
           (float) Math.pow(1.1D, amplifier));
     }

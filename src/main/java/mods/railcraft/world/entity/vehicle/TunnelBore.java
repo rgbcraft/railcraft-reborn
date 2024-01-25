@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.storage.loot.LootContext;
 import org.jetbrains.annotations.Nullable;
 import mods.railcraft.RailcraftConfig;
 import mods.railcraft.api.carts.Linkable;
@@ -58,7 +61,6 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -243,7 +245,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
 
   @Override
   public boolean hurt(DamageSource source, float damage) {
-    if (!this.level().isClientSide() && !this.isRemoved()) {
+    if (!this.getLevel().isClientSide() && !this.isRemoved()) {
       if (this.isInvulnerableTo(source)) {
         return false;
       } else {
@@ -325,7 +327,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
   public void tick() {
     clock++;
 
-    if (!this.level().isClientSide()) {
+    if (!this.getLevel().isClientSide()) {
       if (clock % 64 == 0) {
         forceUpdateBoreHead();
         setMinecartPowered(false);
@@ -342,7 +344,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
       part.tick();
     }
 
-    if (!this.level().isClientSide()) {
+    if (!this.getLevel().isClientSide()) {
 
       updateFuel();
       // if(update % 64 == 0){
@@ -371,7 +373,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
               setActive(false);
             }
             placeBallast = false;
-          } else if (!Block.canSupportRigidBlock(this.level(), targetPos)) {
+          } else if (!Block.canSupportRigidBlock(this.getLevel(), targetPos)) {
             placeBallast = true;
             setDelay(BALLAST_DELAY);
           }
@@ -380,7 +382,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
         if (getDelay() == 0) {
           float offset = 0.8f;
           BlockPos targetPos = new BlockPos(getPositionAhead(offset));
-          BlockState existingState = this.level().getBlockState(targetPos);
+          BlockState existingState = this.getLevel().getBlockState(targetPos);
 
           if (placeRail) {
             boolean placed = placeTrack(targetPos, existingState, dir);
@@ -392,8 +394,8 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
             }
             placeRail = false;
           } else if (BaseRailBlock.isRail(existingState)) {
-            if (dir != TrackUtil.getTrackDirection(this.level(), targetPos, this)) {
-              TrackUtil.setRailShape(this.level(), targetPos, dir);
+            if (dir != TrackUtil.getTrackDirection(this.getLevel(), targetPos, this)) {
+              TrackUtil.setRailShape(this.getLevel(), targetPos, dir);
               setDelay(STANDARD_DELAY);
             }
           } else if (existingState.isAir()
@@ -441,9 +443,9 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
                 .inflateHorizontally(size)
                 .raiseCeiling(2)
                 .build())
-            .list(this.level());
+            .list(this.getLevel());
         entities
-            .forEach(e -> e.hurt(RailcraftDamageSources.bore(this.level().registryAccess()), 2));
+            .forEach(e -> e.hurt(RailcraftDamageSources.bore(this.getLevel().registryAccess()), 2));
 
         ItemStack head = getItem(0);
         if (!head.isEmpty()) {
@@ -485,7 +487,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
   }
 
   private void updateFuel() {
-    if (!this.level().isClientSide()) {
+    if (!this.getLevel().isClientSide()) {
       if (isMinecartPowered()) {
         spendFuel();
       }
@@ -512,7 +514,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
     } else if (getFacing() == Direction.SOUTH) {
       z += offset;
     }
-    return BlockPos.containing(x, this.getY(), z);
+    return new BlockPos(x, this.getY(), z);
   }
 
   protected double getOffsetX(double x, double forwardOffset, double sideOffset) {
@@ -596,18 +598,18 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
       }
 
       if (this.random.nextInt(4) == 0) {
-        this.level().addParticle(ParticleTypes.LARGE_SMOKE,
+        this.getLevel().addParticle(ParticleTypes.LARGE_SMOKE,
             smokeX1, this.getY() + smokeYOffset, smokeZ1,
             0.0D, 0.0D, 0.0D);
-        this.level().addParticle(ParticleTypes.FLAME, flameX1,
+        this.getLevel().addParticle(ParticleTypes.FLAME, flameX1,
             this.getY() + flameYOffset + (this.random.nextGaussian() * randomFactor), flameZ1,
             0.0D, 0.0D, 0.0D);
       }
       if (this.random.nextInt(4) == 0) {
-        this.level().addParticle(ParticleTypes.LARGE_SMOKE,
+        this.getLevel().addParticle(ParticleTypes.LARGE_SMOKE,
             smokeX2, this.getY() + smokeYOffset, smokeZ2,
             0.0D, 0.0D, 0.0D);
-        this.level().addParticle(ParticleTypes.FLAME, flameX2,
+        this.getLevel().addParticle(ParticleTypes.FLAME, flameX2,
             this.getY() + flameYOffset + (this.random.nextGaussian() * randomFactor), flameZ2,
             0.0D, 0.0D, 0.0D);
       }
@@ -623,7 +625,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
 
   @SuppressWarnings("deprecation")
   protected boolean placeBallast(BlockPos targetPos) {
-    if (!Block.canSupportRigidBlock(this.level(), targetPos)) {
+    if (!Block.canSupportRigidBlock(this.getLevel(), targetPos)) {
       return this.ballastContainer.stream()
           .filter(slot -> slot.hasItem()
               && slot.item().getItem() instanceof BlockItem blockItem
@@ -633,22 +635,22 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
             var searchPos = targetPos.mutable();
             for (int i = 0; i < MAX_FILL_DEPTH; i++) {
               searchPos.move(Direction.DOWN);
-              if (Block.canSupportRigidBlock(this.level(), searchPos)) {
+              if (Block.canSupportRigidBlock(this.getLevel(), searchPos)) {
                 // Fill ballast
                 var state =
-                    ContainerTools.getBlockStateFromStack(slot.item(), this.level(), targetPos);
+                    ContainerTools.getBlockStateFromStack(slot.item(), this.getLevel(), targetPos);
                 if (state != null) {
                   slot.extract();
-                  this.level().setBlockAndUpdate(targetPos, state);
+                  this.getLevel().setBlockAndUpdate(targetPos, state);
                   return true;
                 }
               } else {
-                BlockState state = this.level().getBlockState(searchPos);
-                if (!state.isAir() && !state.liquid()) {
+                BlockState state = this.getLevel().getBlockState(searchPos);
+                if (!state.isAir() && !(state.getBlock() instanceof LiquidBlock)) {
                   // Break other blocks first
-                  LevelUtil.playerRemoveBlock(this.level(), searchPos.immutable(),
+                  LevelUtil.playerRemoveBlock(this.getLevel(), searchPos.immutable(),
                       MinecartUtil.getFakePlayer(this),
-                      this.level().getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)
+                      this.getLevel().getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)
                           && !RailcraftConfig.SERVER.boreDestroysBlocks.get());
                 }
               }
@@ -671,16 +673,16 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
     Player owner = MinecartUtil.getFakePlayer(this);
 
     if (REPLACEABLE_BLOCKS.contains(oldState.getBlock())) {
-      LevelUtil.destroyBlock(this.level(), targetPos, owner, true);
+      LevelUtil.destroyBlock(this.getLevel(), targetPos, owner, true);
     }
 
     if (oldState.isAir()
-        && Block.canSupportRigidBlock(this.level(), targetPos.below())) {
+        && Block.canSupportRigidBlock(this.getLevel(), targetPos.below())) {
       return this.trackContainer.stream()
           .filter(SlotAccessor::hasItem)
           .peek(slot -> {
             var placed =
-                TrackUtil.placeRailAt(slot.item(), (ServerLevel) this.level(), targetPos, shape);
+                TrackUtil.placeRailAt(slot.item(), (ServerLevel) this.getLevel(), targetPos, shape);
             if (placed) {
               slot.extract();
             }
@@ -707,7 +709,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
     int y = targetPos.getY();
 
     for (BlockPos blockPos : BlockPos.betweenClosed(xStart, y, zStart, xEnd, y + 3, zEnd)) {
-      Fluid fluid = this.level().getFluidState(blockPos).getType();
+      Fluid fluid = this.getLevel().getFluidState(blockPos).getType();
       if (fluid == Fluids.LAVA || fluid == Fluids.FLOWING_LAVA) {
         return true;
       }
@@ -759,14 +761,14 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
    * @return true if the target block is clear
    */
   protected boolean mineBlock(BlockPos targetPos, RailShape preferredShape) {
-    BlockState targetState = this.level().getBlockState(targetPos);
+    BlockState targetState = this.getLevel().getBlockState(targetPos);
     if (targetState.isAir()) {
       return true;
     }
 
     if (BaseRailBlock.isRail(targetState)) {
       var targetShape =
-          TrackUtil.getTrackDirection(this.level(), targetPos, targetState, this);
+          TrackUtil.getTrackDirection(this.getLevel(), targetPos, targetState, this);
       if (preferredShape == targetShape) {
         return true;
       }
@@ -787,7 +789,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
 
     // Fires break event within; harvest handled separately
     BlockEvent.BreakEvent breakEvent =
-        new BlockEvent.BreakEvent(this.level(), targetPos, targetState, fakePlayer);
+        new BlockEvent.BreakEvent(this.getLevel(), targetPos, targetState, fakePlayer);
     MinecraftForge.EVENT_BUS.post(breakEvent);
 
     if (breakEvent.isCanceled()) {
@@ -795,9 +797,9 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
     }
 
     if (!RailcraftConfig.SERVER.boreDestroysBlocks.get()
-        && this.level().getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+        && this.getLevel().getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
       targetState
-          .getDrops(new LootParams.Builder((ServerLevel) this.level())
+          .getDrops(new LootContext.Builder((ServerLevel) this.getLevel())
               .withParameter(LootContextParams.TOOL, head)
               .withParameter(LootContextParams.KILLER_ENTITY, this)
               .withParameter(LootContextParams.ORIGIN, this.position()))
@@ -815,12 +817,12 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
             }
 
             if (!stack.isEmpty()) {
-              Block.popResource(this.level(), this.blockPosition(), stack);
+              Block.popResource(this.getLevel(), this.blockPosition(), stack);
             }
           });
     }
 
-    LevelUtil.setAir(this.level(), targetPos);
+    LevelUtil.setAir(this.getLevel(), targetPos);
 
     if (head.hurt(1, this.random, fakePlayer)) {
       this.setItem(0, ItemStack.EMPTY);
@@ -831,7 +833,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
 
   private boolean canMineBlock(BlockPos targetPos, BlockState existingState) {
     ItemStack head = getItem(0);
-    if (existingState.getDestroySpeed(this.level(), targetPos) < 0) {
+    if (existingState.getDestroySpeed(this.getLevel(), targetPos) < 0) {
       return false;
     }
     return isMineableBlock(existingState) && canHeadHarvestBlock(head, existingState);
@@ -855,14 +857,14 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
   }
 
   protected float getBlockHardness(BlockPos pos, RailShape dir) {
-    var blockState = this.level().getBlockState(pos);
+    var blockState = this.getLevel().getBlockState(pos);
 
     if (blockState.isAir()) {
       return 0;
     }
 
     if (BaseRailBlock.isRail(blockState)) {
-      var trackMeta = TrackUtil.getTrackDirection(this.level(), pos, blockState, this);
+      var trackMeta = TrackUtil.getTrackDirection(this.getLevel(), pos, blockState, this);
       if (dir == trackMeta) {
         return 0;
       }
@@ -880,7 +882,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
       return 0.1f;
     }
 
-    float hardness = blockState.getDestroySpeed(this.level(), pos);
+    float hardness = blockState.getDestroySpeed(this.getLevel(), pos);
     if (hardness <= 0) {
       hardness = 0.1f;
     }
@@ -935,7 +937,7 @@ public class TunnelBore extends RailcraftMinecart implements Linkable {
   protected void setActive(boolean active) {
     this.active = active;
     var state = active ? Train.State.STOPPED : Train.State.NORMAL;
-    if (!this.level().isClientSide()) {
+    if (!this.getLevel().isClientSide()) {
       RollingStock.getOrThrow(this).train().setState(state);
     }
     // entityData.set(WATCHER_ID_ACTIVE, Byte.valueOf((byte)(active ? 1 : 0)));

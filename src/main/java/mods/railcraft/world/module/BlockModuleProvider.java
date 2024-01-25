@@ -13,7 +13,7 @@ public interface BlockModuleProvider extends ModuleProvider {
 
   @Override
   default void dropItem(ItemStack itemStack) {
-    Containers.dropItemStack(this.level(),
+    Containers.dropItemStack(this.getLevel(),
         this.blockPos().getX(),
         this.blockPos().getY(),
         this.blockPos().getZ(),
@@ -21,10 +21,10 @@ public interface BlockModuleProvider extends ModuleProvider {
   }
 
   default ContainerManipulator<?> findAdjacentContainers() {
-    return ContainerManipulator.findAdjacent(this.level(), this.blockPos());
+    return ContainerManipulator.findAdjacent(this.getLevel(), this.blockPos());
   }
 
   default ContainerManipulator<?> findAdjacentContainers(Predicate<BlockEntity> filter) {
-    return ContainerManipulator.findAdjacent(this.level(), this.blockPos(), filter);
+    return ContainerManipulator.findAdjacent(this.getLevel(), this.blockPos(), filter);
   }
 }

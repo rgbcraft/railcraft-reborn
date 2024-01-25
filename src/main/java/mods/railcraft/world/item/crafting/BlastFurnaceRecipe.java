@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -20,7 +19,7 @@ public class BlastFurnaceRecipe extends AbstractCookingRecipe {
 
   public BlastFurnaceRecipe(ResourceLocation id, String group,
       Ingredient ingredient, ItemStack result, float experience, int cookingTime, int slagOutput) {
-    super(RailcraftRecipeTypes.BLASTING.get(), id, group, CookingBookCategory.MISC,
+    super(RailcraftRecipeTypes.BLASTING.get(), id, group,
         ingredient, result, experience, cookingTime);
     this.slagOutput = slagOutput;
   }

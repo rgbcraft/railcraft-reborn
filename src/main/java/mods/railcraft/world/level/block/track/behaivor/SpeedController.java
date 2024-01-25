@@ -27,7 +27,7 @@ public enum SpeedController implements TrackType.EventHandler {
 
     private boolean isDerailing(RollingStock cart) {
       return (MinecartUtil.getCartSpeedUncapped(cart.entity().getDeltaMovement()) > 0.35F
-          && cart.level().getRandom().nextInt(500) == 250)
+          && cart.getLevel().getRandom().nextInt(500) == 250)
           || cart.train().stream().anyMatch(RollingStock::isDerailed);
     }
 
@@ -38,7 +38,7 @@ public enum SpeedController implements TrackType.EventHandler {
     public Optional<RailShape> getRailShapeOverride(BlockGetter level, BlockPos pos,
         BlockState state,
         @Nullable AbstractMinecart cart) {
-      if (cart == null || cart.level().isClientSide()) {
+      if (cart == null || cart.getLevel().isClientSide()) {
         return Optional.empty();
       }
 

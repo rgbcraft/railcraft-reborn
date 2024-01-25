@@ -39,8 +39,8 @@ public abstract class CookingModule<R extends AbstractCookingRecipe, T extends M
   }
 
   protected Optional<R> getRecipeFor(ItemStack itemStack) {
-    return this.provider.level().getRecipeManager()
-        .getRecipeFor(this.getRecipeType(), new SimpleContainer(itemStack), this.provider.level());
+    return this.provider.getLevel().getRecipeManager()
+        .getRecipeFor(this.getRecipeType(), new SimpleContainer(itemStack), this.provider.getLevel());
   }
 
   @Override

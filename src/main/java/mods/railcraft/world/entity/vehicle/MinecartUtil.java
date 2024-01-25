@@ -60,13 +60,13 @@ public final class MinecartUtil {
     }
     cart.setDeltaMovement(0, cart.getDeltaMovement().y(), 0);
 
-    if (cart.level().isClientSide()) {
+    if (cart.getLevel().isClientSide()) {
       return;
     }
     removePassengers(cart, cart.getX(), cart.getY() + 1.5D, cart.getZ());
-    cart.level().explode(cart, cart.getX(), cart.getY(), cart.getZ(), 3F,
+    cart.getLevel().explode(cart, cart.getX(), cart.getY(), cart.getZ(), 3F,
         Level.ExplosionInteraction.TNT);
-    if (cart.level().getRandom().nextInt(2) == 0) {
+    if (cart.getLevel().getRandom().nextInt(2) == 0) {
       cart.kill();
     }
   }
@@ -106,7 +106,7 @@ public final class MinecartUtil {
   }
 
   public static ServerPlayer getFakePlayer(AbstractMinecart cart) {
-    return RailcraftFakePlayer.get((ServerLevel) cart.level(), cart.position());
+    return RailcraftFakePlayer.get((ServerLevel) cart.getLevel(), cart.position());
   }
 
   public static ServerPlayer getFakePlayerWith(AbstractMinecart cart, ItemStack stack) {
@@ -165,7 +165,7 @@ public final class MinecartUtil {
 
   public static boolean startBoost(AbstractMinecart cart, BlockPos pos,
       RailShape dir, double startBoost) {
-    var level = cart.level();
+    var level = cart.getLevel();
     if (dir == RailShape.EAST_WEST) {
       if (Block.canSupportCenter(level, pos.west(), Direction.EAST)) {
         Vec3 motion = cart.getDeltaMovement();

@@ -118,7 +118,7 @@ public class SteamTurbineModule extends ChargeModule<SteamTurbineBlockEntity> {
   }
 
   public ItemStack useRotor(ItemStack stack) {
-    var random = this.provider.level().getRandom();
+    var random = this.provider.getLevel().getRandom();
     return random.nextInt(ROTOR_DAMAGE_CHANCE) == 0
         && stack.hurt(1, random, null) ? ItemStack.EMPTY : stack;
   }

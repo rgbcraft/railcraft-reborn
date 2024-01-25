@@ -50,7 +50,7 @@ public class TrackRelayer extends MaintenancePatternMinecart {
   @Override
   public void tick() {
     super.tick();
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       return;
     }
     if (this.mode() == Mode.OFF) {
@@ -62,11 +62,11 @@ public class TrackRelayer extends MaintenancePatternMinecart {
 
   private void replace() {
     var pos = this.blockPosition();
-    if (BaseRailBlock.isRail(this.level(), pos.below())) {
+    if (BaseRailBlock.isRail(this.getLevel(), pos.below())) {
       pos = pos.below();
     }
 
-    var blockState = this.level().getBlockState(pos);
+    var blockState = this.getLevel().getBlockState(pos);
     if (!BaseRailBlock.isRail(blockState)) {
       return;
     }
@@ -84,7 +84,7 @@ public class TrackRelayer extends MaintenancePatternMinecart {
 
     boolean nextToSuspended = false;
     for (var direction : HORIZONTAL_DIRECTION) {
-      var blockEntity = this.level().getBlockEntity(pos.offset(direction.getNormal()));
+      var blockEntity = this.getLevel().getBlockEntity(pos.offset(direction.getNormal()));
       if (blockEntity instanceof DumpingTrackBlockEntity) {
         nextToSuspended = true;
         break;

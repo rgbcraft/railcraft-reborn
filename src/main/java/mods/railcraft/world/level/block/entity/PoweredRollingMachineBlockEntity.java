@@ -48,7 +48,7 @@ public class PoweredRollingMachineBlockEntity extends ManualRollingMachineBlockE
   }
 
   private Optional<? extends ChargeStorage> storage() {
-    return this.level().isClientSide() ? Optional.empty() : this.access().storage();
+    return this.getLevel().isClientSide() ? Optional.empty() : this.access().storage();
   }
 
   private Charge.Access access() {

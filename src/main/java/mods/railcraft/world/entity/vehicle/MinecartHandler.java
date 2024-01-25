@@ -1,7 +1,7 @@
 package mods.railcraft.world.entity.vehicle;
 
+import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2d;
 import mods.railcraft.RailcraftConfig;
 import mods.railcraft.api.carts.RollingStock;
 import mods.railcraft.api.carts.Side;
@@ -21,6 +21,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.IMinecartCollisionHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.joml.Vector2d;
 
 public class MinecartHandler implements IMinecartCollisionHandler {
 
@@ -36,7 +37,7 @@ public class MinecartHandler implements IMinecartCollisionHandler {
 
   @Override
   public void onEntityCollision(AbstractMinecart cart, Entity other) {
-    var level = cart.level();
+    var level = cart.getLevel();
 
     if (level.isClientSide() || cart.hasPassenger(other)
         || !other.isAlive() || !cart.isAlive()) {

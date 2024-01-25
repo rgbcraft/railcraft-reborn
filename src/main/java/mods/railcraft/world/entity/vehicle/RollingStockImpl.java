@@ -127,7 +127,7 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
   }
 
   private Optional<RollingStock> resolveLink(UUID minecartId) {
-    var level = (ServerLevel) this.minecart.level();
+    var level = (ServerLevel) this.minecart.getLevel();
     var entity = level.getEntity(minecartId);
     return entity instanceof AbstractMinecart minecart
         ? minecart.getCapability(CAPABILITY)
@@ -348,11 +348,11 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
   public void checkHighSpeed(BlockPos blockPos) {
     var currentMotion = this.minecart.getDeltaMovement();
     if (this.highSpeed) {
-      HighSpeedTrackUtil.checkSafetyAndExplode(this.level(), blockPos, this.minecart);
+      HighSpeedTrackUtil.checkSafetyAndExplode(this.getLevel(), blockPos, this.minecart);
       return;
     }
 
-    if (!HighSpeedTrackUtil.isTrackSafeForHighSpeed(this.level(), blockPos, this.minecart)) {
+    if (!HighSpeedTrackUtil.isTrackSafeForHighSpeed(this.getLevel(), blockPos, this.minecart)) {
       this.limitSpeed();
       return;
     }
@@ -471,7 +471,7 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
   }
 
   private void forceChunk(boolean add) {
-    if (this.level() instanceof ServerLevel level) {
+    if (this.getLevel() instanceof ServerLevel level) {
       var chunk = this.minecart.chunkPosition();
       ForgeChunkManager.forceChunk(level, RailcraftConstants.ID, this.minecart.getUUID(),
           chunk.x, chunk.z, add, false);
@@ -480,7 +480,7 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
 
   @Override
   public void tick() {
-    if (this.level().isClientSide()) {
+    if (this.getLevel().isClientSide()) {
       return;
     }
 
@@ -511,7 +511,7 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
       if (MinecartUtil.cartVelocityIsLessThan(this.entity(), EXPLOSION_SPEED_THRESHOLD)) {
         this.highSpeed = false;
       } else if (this.launchState == LaunchState.LANDED) {
-        HighSpeedTrackUtil.checkSafetyAndExplode(this.level(),
+        HighSpeedTrackUtil.checkSafetyAndExplode(this.getLevel(),
             this.minecart.blockPosition(), this.entity());
       }
     }
@@ -525,7 +525,7 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
       this.minecart.setYRot(this.minecart.getYRot() % 360.0F);
     }
 
-    if (BaseRailBlock.isRail(this.level(), this.minecart.blockPosition())) {
+    if (BaseRailBlock.isRail(this.getLevel(), this.minecart.blockPosition())) {
       this.minecart.fallDistance = 0;
       if (this.minecart.isVehicle()) {
         this.minecart.getPassengers().forEach(p -> p.fallDistance = 0);
@@ -596,7 +596,7 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
 
     var linkedEntity = linkedStock.entity();
 
-    var sameDimension = this.level().dimension().equals(linkedEntity.level().dimension());
+    var sameDimension = this.getLevel().dimension().equals(linkedEntity.getLevel().dimension());
 
     var unlink = false;
     switch (linkSide) {

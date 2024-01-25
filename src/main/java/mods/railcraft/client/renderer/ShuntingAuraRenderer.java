@@ -41,7 +41,7 @@ public class ShuntingAuraRenderer {
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (var linkedCart : this.linkedCarts) {
-          var entity = player.level().getEntity(linkedCart.entityId());
+          var entity = player.getLevel().getEntity(linkedCart.entityId());
           if (!(entity instanceof AbstractMinecart cart) || linkedCart.trainId() == null) {
             continue;
           }
@@ -72,9 +72,9 @@ public class ShuntingAuraRenderer {
               .normal(pose.normal(), 0.0F, 0.0F, 0.0F)
               .endVertex();
 
-          this.renderLink(player.level(), cartX, cartY, cartZ, linkedCart.linkAId(), red,
+          this.renderLink(player.getLevel(), cartX, cartY, cartZ, linkedCart.linkAId(), red,
               green, blue, partialTick, consumer, pose);
-          this.renderLink(player.level(), cartX, cartY, cartZ, linkedCart.linkBId(), red,
+          this.renderLink(player.getLevel(), cartX, cartY, cartZ, linkedCart.linkBId(), red,
               green, blue, partialTick, consumer, pose);
 
           Minecraft.getInstance().renderBuffers().bufferSource().endBatch();

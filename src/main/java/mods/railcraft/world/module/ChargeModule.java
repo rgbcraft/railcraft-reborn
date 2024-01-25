@@ -25,12 +25,12 @@ public class ChargeModule<T extends BlockModuleProvider> extends BaseModule<T> {
   }
 
   public Optional<? extends ChargeStorage> storage() {
-    return this.provider.level().isClientSide() ? Optional.empty() : this.access().storage();
+    return this.provider.getLevel().isClientSide() ? Optional.empty() : this.access().storage();
   }
 
   public Charge.Access access() {
     return this.network
-        .network((ServerLevel) this.provider.level())
+        .network((ServerLevel) this.provider.getLevel())
         .access(this.provider.blockPos());
   }
 
