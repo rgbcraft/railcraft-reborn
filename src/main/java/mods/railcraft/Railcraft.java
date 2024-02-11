@@ -10,15 +10,12 @@ import mods.railcraft.charge.ChargeProviderImpl;
 import mods.railcraft.charge.ZapEffectProviderImpl;
 import mods.railcraft.client.ClientManager;
 import mods.railcraft.data.RailcraftBlockTagsProvider;
-import mods.railcraft.data.RailcraftDamageTypeTagsProvider;
-import mods.railcraft.data.RailcraftDatapackProvider;
 import mods.railcraft.data.RailcraftFluidTagsProvider;
 import mods.railcraft.data.RailcraftItemTagsProvider;
 import mods.railcraft.data.RailcraftLanguageProvider;
 import mods.railcraft.data.RailcraftPoiTypeTagsProvider;
 import mods.railcraft.data.RailcraftSoundsProvider;
 import mods.railcraft.data.RailcraftSpriteSourceProvider;
-import mods.railcraft.data.advancements.RailcraftAdvancementProvider;
 import mods.railcraft.data.loot.RailcraftLootModifierProvider;
 import mods.railcraft.data.loot.RailcraftLootTableProvider;
 import mods.railcraft.data.models.RailcraftBlockModelProvider;
@@ -176,8 +173,6 @@ public class Railcraft {
 
     private void handleGatherData(GatherDataEvent event) {
         var generator = event.getGenerator();
-//        var packOutput = generator.getPackOutput();
-//        var lookupProvider = event.getLookupProvider();
         var fileHelper = event.getExistingFileHelper();
 
         var blockTags = new RailcraftBlockTagsProvider(generator, fileHelper);
@@ -187,16 +182,10 @@ public class Railcraft {
         generator.addProvider(event.includeServer(),
                 new RailcraftFluidTagsProvider(generator, fileHelper));
         generator.addProvider(event.includeServer(), new RailcraftLootTableProvider(generator));
-        generator.addProvider(event.includeServer(),
-                new RailcraftAdvancementProvider(generator, fileHelper));
         generator.addProvider(event.includeServer(), new RailcraftRecipeProvider(generator));
         generator.addProvider(event.includeServer(),
                 new RailcraftPoiTypeTagsProvider(generator, fileHelper));
         generator.addProvider(event.includeServer(), new RailcraftLootModifierProvider(generator));
-        generator.addProvider(event.includeServer(),
-                new RailcraftDamageTypeTagsProvider(generator, fileHelper));
-        generator.addProvider(event.includeServer(),
-                new RailcraftDatapackProvider(generator));
         generator.addProvider(event.includeClient(),
                 new RailcraftItemModelProvider(generator, fileHelper));
         generator.addProvider(event.includeClient(),

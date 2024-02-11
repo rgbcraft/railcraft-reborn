@@ -1,9 +1,6 @@
 package mods.railcraft.mixin;
 
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,24 +12,25 @@ import net.minecraft.world.item.ItemStack;
 @Mixin(Slot.class)
 public class SlotMixin {
 
-  @Shadow
-  @Final
-  private int slot;
+    @Shadow
+    @Final
+    private int slot;
 
-  @Shadow
-  @Final
-  private Container container;
+    @Shadow
+    @Final
+    public Container container;
 
-  private boolean validateSlots;
+    @Unique
+    private boolean railcraft$validateSlots;
 
-  @Inject(method = "<init>(Lnet/minecraft/world/Container;III)V", at = @At("RETURN"))
-  private void railcraft$init(Container container, int slot, int x, int y,
-      CallbackInfo callbackInfo) {
-    this.validateSlots = container.getClass().isAnnotationPresent(ValidateSlots.class);
-  }
+    @Inject(method = "<init>(Lnet/minecraft/world/Container;III)V", at = @At("RETURN"))
+    private void railcraft$init(Container container, int slot, int x, int y,
+                                CallbackInfo callbackInfo) {
+        this.railcraft$validateSlots = container.getClass().isAnnotationPresent(ValidateSlots.class);
+    }
 
-  @Overwrite
-  public boolean mayPlace(ItemStack itemStack) {
-    return !this.validateSlots || this.container.canPlaceItem(this.slot, itemStack);
-  }
+    @Overwrite
+    public boolean mayPlace(ItemStack itemStack) {
+        return !this.railcraft$validateSlots || this.container.canPlaceItem(this.slot, itemStack);
+    }
 }
