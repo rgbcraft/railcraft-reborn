@@ -1,15 +1,18 @@
 package mods.railcraft.client.gui.widget.button;
 
-import java.util.function.Function;
-
-import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mods.railcraft.Railcraft;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Function;
 
 public class RailcraftButton extends Button {
 
@@ -34,8 +37,9 @@ public class RailcraftButton extends Button {
         return hovered ? 2 : 1;
     }
 
+
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderButton(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         var font = Minecraft.getInstance().font;
         RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
@@ -48,14 +52,16 @@ public class RailcraftButton extends Button {
         int yOffset = this.texturePosition.y();
         int h = this.texturePosition.height();
         int w = this.texturePosition.width();
-
-        guiGraphics.blit(WIDGETS_LOCATION, this.getX(), this.getY(), xOffset, yOffset + i * h, this.width / 2, h);
-        guiGraphics.blit(WIDGETS_LOCATION, this.getX() + this.width / 2, this.getY(),
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+        this.blit(poseStack, this.x, this.y, xOffset, yOffset + i * h, this.width / 2, h);
+        this.blit(poseStack, this.x + this.width / 2, this.y,
                 xOffset + w - this.width / 2,
                 yOffset + i * h, this.width / 2, h);
         int j = getFGColor();
-        guiGraphics.drawCenteredString(font, this.getMessage(), this.getX() + this.width / 2,
-                this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        GuiComponent.drawCenteredString(poseStack, font, this.getMessage(), this.x + this.width / 2,
+                this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 
     public static Builder builder(Component message, OnPress onPress,
@@ -84,13 +90,12 @@ public class RailcraftButton extends Button {
         private final OnPress onPress;
         private final TexturePosition texturePosition;
 
-        @Nullable
-        private Tooltip tooltip;
+        //        @Nullable
+//        private Tooltip tooltip;
         private int x;
         private int y;
         private int width = 150;
         private int height = 20;
-        private CreateNarration createNarration = DEFAULT_NARRATION;
 
         public AbstractBuilder(Function<SELF, T> factory, Component message, OnPress onPress,
                                TexturePosition texturePosition) {
@@ -121,19 +126,14 @@ public class RailcraftButton extends Button {
             return this.pos(x, y).size(width, height);
         }
 
-        public SELF tooltip(@Nullable Tooltip tooltip) {
-            this.tooltip = tooltip;
-            return this.self();
-        }
-
-        public SELF createNarration(CreateNarration createNarration) {
-            this.createNarration = createNarration;
-            return this.self();
-        }
+//        public SELF tooltip(@Nullable Tooltip tooltip) {
+//            this.tooltip = tooltip;
+//            return this.self();
+//        }
 
         public T build() {
             var button = this.factory.apply(this.self());
-            button.setTooltip(this.tooltip);
+//            button.setTooltip(this.tooltip);
             return button;
         }
 
