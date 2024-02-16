@@ -33,7 +33,7 @@ import mods.railcraft.tags.RailcraftTags;
 import mods.railcraft.util.EntitySearcher;
 import mods.railcraft.util.capability.CapabilityUtil;
 import mods.railcraft.util.capability.FluidBottleWrapper;
-import mods.railcraft.world.damagesource.RailcraftDamageSources;
+//import mods.railcraft.world.damagesource.RailcraftDamageSources;
 import mods.railcraft.world.effect.RailcraftMobEffects;
 import mods.railcraft.world.entity.RailcraftEntityTypes;
 import mods.railcraft.world.entity.ai.village.poi.RailcraftPoiTypes;
@@ -193,8 +193,8 @@ public class Railcraft {
         generator.addProvider(event.includeClient(), new RailcraftLanguageProvider(generator));
         generator.addProvider(event.includeClient(),
                 new RailcraftSoundsProvider(generator, fileHelper));
-        generator.addProvider(event.includeClient(),
-                new RailcraftSpriteSourceProvider(generator, fileHelper));
+//        generator.addProvider(event.includeClient(),
+//                new RailcraftSpriteSourceProvider(generator, fileHelper));
     }
 
     // Forge Events
@@ -294,19 +294,19 @@ public class Railcraft {
     public void modifyDrops(LivingDropsEvent event) {
         var level = event.getEntity().getLevel();
         var registryAccess = level.registryAccess();
-        if (event.getSource().equals(RailcraftDamageSources.steam(registryAccess))) {
-            var recipeManager = level.getRecipeManager();
-            for (var entityItem : event.getDrops()) {
-                var drop = entityItem.getItem();
-                var cooked = recipeManager
-                        .getRecipeFor(RecipeType.SMELTING, new SimpleContainer(drop), level)
-                        .map(AbstractCookingRecipe::getResultItem)
-                        .orElse(ItemStack.EMPTY);
-                if (!cooked.isEmpty() && level.getRandom().nextBoolean()) {
-                    entityItem.setItem(new ItemStack(cooked.getItem(), drop.getCount()));
-                }
-            }
-        }
+//        if (event.getSource().equals(RailcraftDamageSources.steam(registryAccess))) {
+//            var recipeManager = level.getRecipeManager();
+//            for (var entityItem : event.getDrops()) {
+//                var drop = entityItem.getItem();
+//                var cooked = recipeManager
+//                        .getRecipeFor(RecipeType.SMELTING, new SimpleContainer(drop), level)
+//                        .map(AbstractCookingRecipe::getResultItem)
+//                        .orElse(ItemStack.EMPTY);
+//                if (!cooked.isEmpty() && level.getRandom().nextBoolean()) {
+//                    entityItem.setItem(new ItemStack(cooked.getItem(), drop.getCount()));
+//                }
+//            }
+//        }
     }
 
     @SubscribeEvent
