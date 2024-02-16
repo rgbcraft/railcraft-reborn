@@ -1,37 +1,38 @@
 package mods.railcraft.client.gui.screen.inventory;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mods.railcraft.Railcraft;
 import mods.railcraft.Translations;
 import mods.railcraft.client.util.GuiUtil;
 import mods.railcraft.world.inventory.DumpingTrackMenu;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class DumpingTrackScreen extends RailcraftMenuScreen<DumpingTrackMenu> {
 
-  private static final ResourceLocation WIDGETS_TEXTURE_LOCATION =
-      Railcraft.rl("textures/gui/container/dumping_track.png");
+    private static final ResourceLocation WIDGETS_TEXTURE_LOCATION =
+            Railcraft.rl("textures/gui/container/dumping_track.png");
 
-  private static final Component FILTERS =
-      Component.translatable(Translations.Screen.ITEM_MANIPULATOR_FILTERS);
-  private static final Component CARTS =
-      Component.translatable(Translations.Screen.CART_FILTERS);
+    private static final Component FILTERS =
+            Component.translatable(Translations.Screen.ITEM_MANIPULATOR_FILTERS);
+    private static final Component CARTS =
+            Component.translatable(Translations.Screen.CART_FILTERS);
 
-  public DumpingTrackScreen(DumpingTrackMenu menu, Inventory inventory, Component title) {
-    super(menu, inventory, title);
-  }
+    public DumpingTrackScreen(DumpingTrackMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, title);
+    }
 
-  @Override
-  public ResourceLocation getWidgetsTexture() {
-    return WIDGETS_TEXTURE_LOCATION;
-  }
+    @Override
+    public ResourceLocation getWidgetsTexture() {
+        return WIDGETS_TEXTURE_LOCATION;
+    }
 
-  @Override
-  protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-    super.renderLabels(guiGraphics, mouseX, mouseY);
-    GuiUtil.drawCenteredString(guiGraphics, this.font, FILTERS, 250, 26);
-    GuiUtil.drawCenteredString(guiGraphics, this.font, CARTS, 100, 35);
-  }
+    @Override
+    protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
+        super.renderLabels(poseStack, mouseX, mouseY);
+        GuiUtil.drawCenteredString(poseStack, this.font, FILTERS, 250, 26);
+        GuiUtil.drawCenteredString(poseStack, this.font, CARTS, 100, 35);
+    }
 }
