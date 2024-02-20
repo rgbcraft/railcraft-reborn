@@ -100,6 +100,24 @@ public class RailcraftCreativeModeTabs extends CreativeModeTab {
         items.add(RailcraftItems.BRONZE_INGOT.get().getDefaultInstance());
         items.add(RailcraftItems.INVAR_INGOT.get().getDefaultInstance());
 
+            output.accept(RailcraftItems.ADVANCED_DETECTOR.get());
+            output.accept(RailcraftItems.AGE_DETECTOR.get());
+            output.accept(RailcraftItems.ANIMAL_DETECTOR.get());
+            output.accept(RailcraftItems.ANY_DETECTOR.get());
+            output.accept(RailcraftItems.EMPTY_DETECTOR.get());
+            output.accept(RailcraftItems.ITEM_DETECTOR.get());
+            output.accept(RailcraftItems.LOCOMOTIVE_DETECTOR.get());
+            output.accept(RailcraftItems.MOB_DETECTOR.get());
+            output.accept(RailcraftItems.PLAYER_DETECTOR.get());
+            output.accept(RailcraftItems.ROUTING_DETECTOR.get());
+            output.accept(RailcraftItems.SHEEP_DETECTOR.get());
+            output.accept(RailcraftItems.TANK_DETECTOR.get());
+            output.accept(RailcraftItems.TRAIN_DETECTOR.get());
+            output.accept(RailcraftItems.VILLAGER_DETECTOR.get());
+
+            output.accept(RailcraftItems.IRON_SPIKE_MAUL.get());
+            output.accept(RailcraftItems.STEEL_SPIKE_MAUL.get());
+            output.accept(RailcraftItems.DIAMOND_SPIKE_MAUL.get());
         items.add(RailcraftItems.LEAD_NUGGET.get().getDefaultInstance());
         items.add(RailcraftItems.NICKEL_NUGGET.get().getDefaultInstance());
         items.add(RailcraftItems.SILVER_NUGGET.get().getDefaultInstance());
@@ -184,6 +202,45 @@ public class RailcraftCreativeModeTabs extends CreativeModeTab {
         items.add(RailcraftItems.DIAMOND_CROWBAR.get().getDefaultInstance());
         items.add(RailcraftItems.SEASONS_CROWBAR.get().getDefaultInstance());
 
+            output.accept(RailcraftItems.IRON_TANK_GAUGE.variantFor(DyeColor.WHITE).get());
+            output.accept(RailcraftItems.IRON_TANK_VALVE.variantFor(DyeColor.WHITE).get());
+            output.accept(RailcraftItems.IRON_TANK_WALL.variantFor(DyeColor.WHITE).get());
+            output.accept(RailcraftItems.STEEL_TANK_GAUGE.variantFor(DyeColor.WHITE).get());
+            output.accept(RailcraftItems.STEEL_TANK_VALVE.variantFor(DyeColor.WHITE).get());
+            output.accept(RailcraftItems.STEEL_TANK_WALL.variantFor(DyeColor.WHITE).get());
+          })
+          .build());
+  public static final RegistryObject<CreativeModeTab> OUTFITTED_TRACKS =
+      deferredRegister.register("outfitted_tracks", () -> CreativeModeTab.builder()
+          .withTabsBefore(MAIN_TAB.getId())
+          .title(Component.translatable(Translations.Tab.RAILCRAFT_OUTFITTED_TRACKS))
+          .icon(() -> new ItemStack(RailcraftItems.IRON_DETECTOR_TRACK.get()))
+          .displayItems((params, output) -> {
+            /*
+             * TODO:
+             *  - Messenger track
+             *  - Delayed locking track
+             */
+            output.accept(RailcraftItems.ABANDONED_ACTIVATOR_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_BOOSTER_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_BUFFER_STOP_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_COUPLER_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_CONTROL_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_DETECTOR_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_EMBARKING_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_DISEMBARKING_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_DUMPING_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_GATED_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_LAUNCHER_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_LOCKING_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_WHISTLE_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_LOCOMOTIVE_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_THROTTLE_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_ROUTING_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_ONE_WAY_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_WYE_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_TURNOUT_TRACK.get());
+            output.accept(RailcraftItems.ABANDONED_JUNCTION_TRACK.get());
         items.add(RailcraftItems.REBAR.get().getDefaultInstance());
         items.add(RailcraftItems.WHISTLE_TUNER.get().getDefaultInstance());
         items.add(RailcraftItems.SIGNAL_TUNER.get().getDefaultInstance());
