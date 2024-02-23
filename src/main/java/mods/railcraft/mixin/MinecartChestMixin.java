@@ -1,5 +1,6 @@
 package mods.railcraft.mixin;
 
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import mods.railcraft.util.ValidateSlots;
 import mods.railcraft.util.container.StackFilter;
@@ -13,12 +14,12 @@ import net.minecraft.world.level.Level;
 @Mixin(MinecartChest.class)
 public abstract class MinecartChestMixin extends AbstractMinecartContainer {
 
-  protected MinecartChestMixin(EntityType<?> type, Level level) {
-    super(type, level);
-  }
+    protected MinecartChestMixin(EntityType<?> type, Level level) {
+        super(type, level);
+    }
 
-  @Override
-  public boolean canPlaceItem(int index, ItemStack itemStack) {
-    return StackFilter.CARGO.test(itemStack);
-  }
+    @Override
+    public boolean canPlaceItem(int index, @NotNull ItemStack itemStack) {
+        return StackFilter.CARGO.test(itemStack);
+    }
 }

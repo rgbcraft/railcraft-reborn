@@ -1,6 +1,7 @@
 package mods.railcraft.world.level.block.entity;
 
 import java.util.EnumSet;
+
 import org.jetbrains.annotations.Nullable;
 import mods.railcraft.api.carts.RollingStock;
 import mods.railcraft.api.signal.SignalAspect;
@@ -19,100 +20,109 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SwitchTrackMotorBlockEntity extends LockableSwitchTrackActuatorBlockEntity
-    implements SignalReceiverEntity, SwitchActuator {
+        implements SignalReceiverEntity, SwitchActuator {
 
-  private final SingleSignalReceiver signalReceiver =
-      new SingleSignalReceiver(this, this::syncToClient, __ -> this.updateSwitched());
+    private final SingleSignalReceiver signalReceiver =
+            new SingleSignalReceiver(this, this::syncToClient, __ -> this.updateSwitched());
 
-  private final EnumSet<SignalAspect> actionSignalAspects = EnumSet.of(SignalAspect.GREEN);
+    private final EnumSet<SignalAspect> actionSignalAspects = EnumSet.of(SignalAspect.GREEN);
 
-  private boolean redstoneTriggered;
-  private boolean powered;
+    private boolean redstoneTriggered;
+    private boolean powered;
 
-  public SwitchTrackMotorBlockEntity(BlockPos blockPos, BlockState blockState) {
-    super(RailcraftBlockEntityTypes.SWITCH_TRACK_MOTOR.get(), blockPos, blockState);
-  }
-
-  public void neighborChanged() {
-    boolean lastPowered = this.powered;
-    this.powered = this.level.hasNeighborSignal(this.getBlockPos());
-    if (this.redstoneTriggered && lastPowered != this.powered) {
-      this.updateSwitched();
+    public SwitchTrackMotorBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(RailcraftBlockEntityTypes.SWITCH_TRACK_MOTOR.get(), blockPos, blockState);
     }
-  }
 
-  private void updateSwitched() {
-    boolean switched = this.powered
-        || this.actionSignalAspects.contains(this.signalReceiver.getPrimarySignalAspect());
-    SwitchTrackActuatorBlock.setSwitched(
-        this.getBlockState(), this.level, this.getBlockPos(), switched);
-  }
-
-  @Override
-  public boolean shouldSwitch(RollingStock cart) {
-    return SwitchTrackActuatorBlock.isSwitched(this.getBlockState());
-  }
-
-  public EnumSet<SignalAspect> getActionSignalAspects() {
-    return this.actionSignalAspects;
-  }
-
-  public boolean isRedstoneTriggered() {
-    return this.redstoneTriggered;
-  }
-
-  public void setRedstoneTriggered(boolean redstoneTriggered) {
-    this.redstoneTriggered = redstoneTriggered;
-    this.updateSwitched();
-  }
-
-  @Override
-  public void setCustomName(@Nullable Component name) {
-    super.setCustomName(name);
-  }
-
-  @Override
-  public SignalReceiver getSignalReceiver() {
-    return this.signalReceiver;
-  }
-
-  @Override
-  protected void saveAdditional(CompoundTag tag) {
-    super.saveAdditional(tag);
-    tag.put("signalReceiver", this.signalReceiver.serializeNBT());
-    var actionAspectsTag = new ListTag();
-    this.actionSignalAspects
-        .forEach(aspect -> actionAspectsTag.add(StringTag.valueOf(aspect.getSerializedName())));
-    tag.put("actionSignalAspects", actionAspectsTag);
-    tag.putBoolean("redstoneTriggered", this.redstoneTriggered);
-  }
-
-  @Override
-  public void load(CompoundTag tag) {
-    super.load(tag);
-    this.signalReceiver.deserializeNBT(tag.getCompound("signalReceiver"));
-    var actionAspectsTag = tag.getList("actionSignalAspects", Tag.TAG_STRING);
-    this.actionSignalAspects.clear();
-    for (var aspectTag : actionAspectsTag) {
-      SignalAspect.getByName(aspectTag.getAsString()).ifPresent(this.actionSignalAspects::add);
+    public void neighborChanged() {
+        boolean lastPowered = this.powered;
+        this.powered = this.level.hasNeighborSignal(this.getBlockPos());
+        if (this.redstoneTriggered && lastPowered != this.powered) {
+            this.updateSwitched();
+        }
     }
-    this.redstoneTriggered = tag.getBoolean("redstoneTriggered");
-  }
 
-  @Override
-  public void writeToBuf(FriendlyByteBuf data) {
-    super.writeToBuf(data);
-    this.signalReceiver.writeToBuf(data);
-    data.writeEnumSet(this.actionSignalAspects, SignalAspect.class);
-    data.writeBoolean(this.redstoneTriggered);
-  }
+    private void updateSwitched() {
+        boolean switched = this.powered
+                || this.actionSignalAspects.contains(this.signalReceiver.getPrimarySignalAspect());
+        SwitchTrackActuatorBlock.setSwitched(
+                this.getBlockState(), this.level, this.getBlockPos(), switched);
+    }
 
-  @Override
-  public void readFromBuf(FriendlyByteBuf data) {
-    super.readFromBuf(data);
-    this.signalReceiver.readFromBuf(data);
-    this.actionSignalAspects.clear();
-    this.actionSignalAspects.addAll(data.readEnumSet(SignalAspect.class));
-    this.redstoneTriggered = data.readBoolean();
-  }
+    @Override
+    public boolean shouldSwitch(RollingStock cart) {
+        return SwitchTrackActuatorBlock.isSwitched(this.getBlockState());
+    }
+
+    public EnumSet<SignalAspect> getActionSignalAspects() {
+        return this.actionSignalAspects;
+    }
+
+    public boolean isRedstoneTriggered() {
+        return this.redstoneTriggered;
+    }
+
+    public void setRedstoneTriggered(boolean redstoneTriggered) {
+        this.redstoneTriggered = redstoneTriggered;
+        this.updateSwitched();
+    }
+
+    @Override
+    public void setCustomName(@Nullable Component name) {
+        super.setCustomName(name);
+    }
+
+    @Override
+    public SignalReceiver getSignalReceiver() {
+        return this.signalReceiver;
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.put("signalReceiver", this.signalReceiver.serializeNBT());
+        var actionAspectsTag = new ListTag();
+        this.actionSignalAspects
+                .forEach(aspect -> actionAspectsTag.add(StringTag.valueOf(aspect.getSerializedName())));
+        tag.put("actionSignalAspects", actionAspectsTag);
+        tag.putBoolean("redstoneTriggered", this.redstoneTriggered);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.signalReceiver.deserializeNBT(tag.getCompound("signalReceiver"));
+        var actionAspectsTag = tag.getList("actionSignalAspects", Tag.TAG_STRING);
+        this.actionSignalAspects.clear();
+        for (var aspectTag : actionAspectsTag) {
+            SignalAspect.getByName(aspectTag.getAsString()).ifPresent(this.actionSignalAspects::add);
+        }
+        this.redstoneTriggered = tag.getBoolean("redstoneTriggered");
+    }
+
+    @Override
+    public void writeToBuf(FriendlyByteBuf data) {
+        super.writeToBuf(data);
+        this.signalReceiver.writeToBuf(data);
+        SignalAspect[] set = (SignalAspect[]) this.actionSignalAspects.toArray();
+        data.writeInt(set.length);
+        for (var elem : set) {
+            data.writeEnum(elem);
+        }
+//    data.writeEnumSet(this.actionSignalAspects, SignalAspect.class);
+        data.writeBoolean(this.redstoneTriggered);
+    }
+
+    @Override
+    public void readFromBuf(FriendlyByteBuf data) {
+        super.readFromBuf(data);
+        this.signalReceiver.readFromBuf(data);
+        this.actionSignalAspects.clear();
+        var len = data.readInt();
+        for (int i = 0; i < len; i++) {
+            this.actionSignalAspects.add(data.readEnum(SignalAspect.class));
+        }
+//    this.actionSignalAspects.addAll(data.readEnumSet(SignalAspect.class));
+        this.redstoneTriggered = data.readBoolean();
+    }
 }

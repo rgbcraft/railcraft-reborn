@@ -1,7 +1,6 @@
 package mods.railcraft.data.loot;
 
 import mods.railcraft.api.core.RailcraftConstants;
-import mods.railcraft.data.loot.packs.RailcraftChestLoot;
 import mods.railcraft.loot.DungeonLootModifier;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -23,11 +22,11 @@ public class RailcraftLootModifierProvider extends GlobalLootModifierProvider {
 
     @Override
     protected void start() {
-        this.add(BuiltInLootTables.ABANDONED_MINESHAFT, RailcraftChestLoot.ABANDONED_MINESHAFT);
-        this.add(BuiltInLootTables.SIMPLE_DUNGEON, RailcraftChestLoot.SIMPLE_DUNGEON);
-        this.add(BuiltInLootTables.STRONGHOLD_CORRIDOR, RailcraftChestLoot.SIMPLE_DUNGEON);
-        this.add(BuiltInLootTables.STRONGHOLD_CROSSING, RailcraftChestLoot.SIMPLE_DUNGEON);
-        this.add(BuiltInLootTables.VILLAGE_ARMORER, RailcraftChestLoot.SIMPLE_DUNGEON);
+//        this.add(BuiltInLootTables.ABANDONED_MINESHAFT, RailcraftChestLoot.ABANDONED_MINESHAFT);
+//        this.add(BuiltInLootTables.SIMPLE_DUNGEON, RailcraftChestLoot.SIMPLE_DUNGEON);
+//        this.add(BuiltInLootTables.STRONGHOLD_CORRIDOR, RailcraftChestLoot.SIMPLE_DUNGEON);
+//        this.add(BuiltInLootTables.STRONGHOLD_CROSSING, RailcraftChestLoot.SIMPLE_DUNGEON);
+//        this.add(BuiltInLootTables.VILLAGE_ARMORER, RailcraftChestLoot.SIMPLE_DUNGEON);
     }
 
     private LootItemCondition[] getCondition(ResourceLocation lootTable) {

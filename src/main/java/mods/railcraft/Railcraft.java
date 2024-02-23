@@ -9,15 +9,8 @@ import mods.railcraft.charge.ChargeCartStorageImpl;
 import mods.railcraft.charge.ChargeProviderImpl;
 import mods.railcraft.charge.ZapEffectProviderImpl;
 import mods.railcraft.client.ClientManager;
-import mods.railcraft.data.RailcraftBlockTagsProvider;
-import mods.railcraft.data.RailcraftFluidTagsProvider;
-import mods.railcraft.data.RailcraftItemTagsProvider;
-import mods.railcraft.data.RailcraftLanguageProvider;
-import mods.railcraft.data.RailcraftPoiTypeTagsProvider;
-import mods.railcraft.data.RailcraftSoundsProvider;
-import mods.railcraft.data.RailcraftSpriteSourceProvider;
+import mods.railcraft.data.*;
 import mods.railcraft.data.loot.RailcraftLootModifierProvider;
-import mods.railcraft.data.loot.RailcraftLootTableProvider;
 import mods.railcraft.data.models.RailcraftBlockModelProvider;
 import mods.railcraft.data.models.RailcraftItemModelProvider;
 import mods.railcraft.data.recipes.RailcraftRecipeProvider;
@@ -33,7 +26,6 @@ import mods.railcraft.tags.RailcraftTags;
 import mods.railcraft.util.EntitySearcher;
 import mods.railcraft.util.capability.CapabilityUtil;
 import mods.railcraft.util.capability.FluidBottleWrapper;
-//import mods.railcraft.world.damagesource.RailcraftDamageSources;
 import mods.railcraft.world.effect.RailcraftMobEffects;
 import mods.railcraft.world.entity.RailcraftEntityTypes;
 import mods.railcraft.world.entity.ai.village.poi.RailcraftPoiTypes;
@@ -52,10 +44,6 @@ import mods.railcraft.world.item.enchantment.RailcraftEnchantments;
 import mods.railcraft.world.level.block.RailcraftBlocks;
 import mods.railcraft.world.level.block.entity.RailcraftBlockEntityTypes;
 import mods.railcraft.world.level.block.track.TrackTypes;
-import mods.railcraft.world.level.gameevent.RailcraftGameEvents;
-import mods.railcraft.world.level.levelgen.structure.ComponentWorkshop;
-import mods.railcraft.world.level.levelgen.structure.RailcraftStructurePieces;
-import mods.railcraft.world.level.levelgen.structure.RailcraftStructureTypes;
 import mods.railcraft.world.level.material.RailcraftFluidTypes;
 import mods.railcraft.world.level.material.RailcraftFluids;
 import mods.railcraft.world.signal.TokenRingManager;
@@ -64,15 +52,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -142,13 +127,13 @@ public class Railcraft {
         RailcraftParticleTypes.register(modEventBus);
         RailcraftRecipeSerializers.register(modEventBus);
         RailcraftRecipeTypes.register(modEventBus);
-        RailcraftGameEvents.register(modEventBus);
+//        RailcraftGameEvents.register(modEventBus);
         RailcraftDataSerializers.register(modEventBus);
         RailcraftPoiTypes.register(modEventBus);
         RailcraftVillagerProfession.register(modEventBus);
         RailcraftLootModifiers.register(modEventBus);
-        RailcraftStructureTypes.register(modEventBus);
-        RailcraftStructurePieces.register(modEventBus);
+//        RailcraftStructureTypes.register(modEventBus);
+//        RailcraftStructurePieces.register(modEventBus);
     }
 
     // Mod Events
@@ -181,7 +166,7 @@ public class Railcraft {
                 new RailcraftItemTagsProvider(generator, blockTags, fileHelper));
         generator.addProvider(event.includeServer(),
                 new RailcraftFluidTagsProvider(generator, fileHelper));
-        generator.addProvider(event.includeServer(), new RailcraftLootTableProvider(generator));
+//        generator.addProvider(event.includeServer(), new RailcraftLootTableProvider(generator));
         generator.addProvider(event.includeServer(), new RailcraftRecipeProvider(generator));
         generator.addProvider(event.includeServer(),
                 new RailcraftPoiTypeTagsProvider(generator, fileHelper));
@@ -200,7 +185,7 @@ public class Railcraft {
     // Forge Events
     @SubscribeEvent
     public void handleServerAboutToStart(ServerAboutToStartEvent event) {
-        ComponentWorkshop.addVillageStructures(event.getServer().registryAccess());
+//        ComponentWorkshop.addVillageStructures(event.getServer().registryAccess());
     }
 
     @SubscribeEvent
@@ -324,6 +309,6 @@ public class Railcraft {
 
     @SubscribeEvent
     public void handleNeighborNotify(BlockEvent.NeighborNotifyEvent event) {
-        event.getLevel().gameEvent(null, RailcraftGameEvents.NEIGHBOR_NOTIFY.get(), event.getPos());
+//        event.getLevel().gameEvent(null, RailcraftGameEvents.NEIGHBOR_NOTIFY.get(), event.getPos());
     }
 }

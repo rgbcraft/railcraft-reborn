@@ -1,6 +1,7 @@
 package mods.railcraft.loot;
 
 import java.util.function.Supplier;
+
 import org.jetbrains.annotations.NotNull;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
@@ -17,32 +18,32 @@ import net.minecraftforge.common.loot.LootModifier;
 
 public class DungeonLootModifier extends LootModifier {
 
-  public static final Supplier<Codec<DungeonLootModifier>> CODEC =
-      Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst)
-          .and(ResourceLocation.CODEC.fieldOf("lootTable").forGetter((m) -> m.lootTable))
-          .apply(inst, DungeonLootModifier::new)));
-  private final ResourceLocation lootTable;
+    public static final Supplier<Codec<DungeonLootModifier>> CODEC =
+            Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst)
+                    .and(ResourceLocation.CODEC.fieldOf("lootTable").forGetter((m) -> m.lootTable))
+                    .apply(inst, DungeonLootModifier::new)));
+    private final ResourceLocation lootTable;
 
-  public DungeonLootModifier(LootItemCondition[] conditionsIn, ResourceLocation lootTable) {
-    super(conditionsIn);
-    this.lootTable = lootTable;
-  }
-
-  @SuppressWarnings("deprecation")
-  @Override
-  @NotNull
-  protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot,
-      LootContext context) {
-    if (RailcraftConfig.SERVER.changeDungeonLoot.get()) {
-      var extraTable = context.getResolver().getLootTable(this.lootTable);
-      extraTable.getRandomItemsRaw(context,
-          LootTable.createStackSplitter(context.getLevel(), generatedLoot::add));
+    public DungeonLootModifier(LootItemCondition[] conditionsIn, ResourceLocation lootTable) {
+        super(conditionsIn);
+        this.lootTable = lootTable;
     }
-    return generatedLoot;
-  }
 
-  @Override
-  public Codec<? extends IGlobalLootModifier> codec() {
-    return CODEC.get();
-  }
+    @SuppressWarnings("deprecation")
+    @Override
+    @NotNull
+    protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot,
+                                                 LootContext context) {
+        if (RailcraftConfig.SERVER.changeDungeonLoot.get()) {
+            var extraTable = context.getLootTable(this.lootTable);
+            extraTable.getRandomItemsRaw(context,
+                    LootTable.createStackSplitter(generatedLoot::add));
+        }
+        return generatedLoot;
+    }
+
+    @Override
+    public Codec<? extends IGlobalLootModifier> codec() {
+        return CODEC.get();
+    }
 }

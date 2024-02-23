@@ -9,40 +9,40 @@ import net.minecraft.world.item.ItemStack;
 
 public class RollingResultSlot extends ResultSlot {
 
-  private final CraftingContainer craftSlots;
-  private final Player player;
+    private final CraftingContainer craftSlots;
+    private final Player player;
 
-  public RollingResultSlot(Player player, CraftingContainer craftSlots, Container container,
-      int slot, int xPos, int yPos) {
-    super(player, craftSlots, container, slot, xPos, yPos);
-    this.player = player;
-    this.craftSlots = craftSlots;
-  }
-
-  @Override
-  public void onTake(Player player, ItemStack stack) {
-    this.checkTakeAchievements(stack);
-    var recipeRemainingItems = player.getLevel().getRecipeManager()
-        .getRemainingItemsFor(RailcraftRecipeTypes.ROLLING.get(), this.craftSlots, player.getLevel());
-    for (int i = 0; i < recipeRemainingItems.size(); ++i) {
-      var itemstack = this.craftSlots.getItem(i);
-      var itemstack1 = recipeRemainingItems.get(i);
-      if (!itemstack.isEmpty()) {
-        this.craftSlots.removeItem(i, 1);
-        itemstack = this.craftSlots.getItem(i);
-      }
-
-      if (!itemstack1.isEmpty()) {
-        if (itemstack.isEmpty()) {
-          this.craftSlots.setItem(i, itemstack1);
-        } else if (ItemStack.isSameItem(itemstack, itemstack1)
-            && ItemStack.isSameItemSameTags(itemstack, itemstack1)) {
-          itemstack1.grow(itemstack.getCount());
-          this.craftSlots.setItem(i, itemstack1);
-        } else if (!this.player.getInventory().add(itemstack1)) {
-          this.player.drop(itemstack1, false);
-        }
-      }
+    public RollingResultSlot(Player player, CraftingContainer craftSlots, Container container,
+                             int slot, int xPos, int yPos) {
+        super(player, craftSlots, container, slot, xPos, yPos);
+        this.player = player;
+        this.craftSlots = craftSlots;
     }
-  }
+
+    @Override
+    public void onTake(Player player, ItemStack stack) {
+        this.checkTakeAchievements(stack);
+        var recipeRemainingItems = player.getLevel().getRecipeManager()
+                .getRemainingItemsFor(RailcraftRecipeTypes.ROLLING.get(), this.craftSlots, player.getLevel());
+        for (int i = 0; i < recipeRemainingItems.size(); ++i) {
+            var itemstack = this.craftSlots.getItem(i);
+            var itemstack1 = recipeRemainingItems.get(i);
+            if (!itemstack.isEmpty()) {
+                this.craftSlots.removeItem(i, 1);
+                itemstack = this.craftSlots.getItem(i);
+            }
+
+            if (!itemstack1.isEmpty()) {
+                if (itemstack.isEmpty()) {
+                    this.craftSlots.setItem(i, itemstack1);
+                } else if (ItemStack.isSame(itemstack, itemstack1)
+                        && ItemStack.isSameItemSameTags(itemstack, itemstack1)) {
+                    itemstack1.grow(itemstack.getCount());
+                    this.craftSlots.setItem(i, itemstack1);
+                } else if (!this.player.getInventory().add(itemstack1)) {
+                    this.player.drop(itemstack1, false);
+                }
+            }
+        }
+    }
 }

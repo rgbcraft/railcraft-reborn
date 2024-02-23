@@ -1,6 +1,7 @@
 package mods.railcraft.world.level.block.entity.signal;
 
 import java.util.EnumSet;
+
 import mods.railcraft.api.signal.SignalAspect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -13,60 +14,69 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class ActionSignalBoxBlockEntity extends LockableSignalBoxBlockEntity {
 
-  private final EnumSet<SignalAspect> actionSignalAspects = EnumSet.of(SignalAspect.GREEN);
+    private final EnumSet<SignalAspect> actionSignalAspects = EnumSet.of(SignalAspect.GREEN);
 
-  public ActionSignalBoxBlockEntity(BlockEntityType<?> type, BlockPos blockPos,
-      BlockState blockState) {
-    super(type, blockPos, blockState);
-  }
-
-  public final EnumSet<SignalAspect> getActionSignalAspects() {
-    return this.actionSignalAspects;
-  }
-
-  protected final boolean isActionSignalAspect(SignalAspect signalAspect) {
-    return this.actionSignalAspects.contains(signalAspect);
-  }
-
-  protected final void addActionSignalAspect(SignalAspect signalAspect) {
-    this.actionSignalAspects.add(signalAspect);
-    this.setChanged();
-  }
-
-  protected final void removeActionSignalAspect(SignalAspect signalAspect) {
-    this.actionSignalAspects.remove(signalAspect);
-    this.setChanged();
-  }
-
-  @Override
-  protected void saveAdditional(CompoundTag tag) {
-    super.saveAdditional(tag);
-    var actionAspectsTag = new ListTag();
-    this.actionSignalAspects
-        .forEach(aspect -> actionAspectsTag.add(StringTag.valueOf(aspect.getSerializedName())));
-    tag.put("actionSignalAspects", actionAspectsTag);
-  }
-
-  @Override
-  public void load(CompoundTag tag) {
-    super.load(tag);
-    var actionAspectsTag = tag.getList("actionSignalAspects", Tag.TAG_STRING);
-    this.actionSignalAspects.clear();
-    for (var aspectTag : actionAspectsTag) {
-      SignalAspect.getByName(aspectTag.getAsString()).ifPresent(this.actionSignalAspects::add);
+    public ActionSignalBoxBlockEntity(BlockEntityType<?> type, BlockPos blockPos,
+                                      BlockState blockState) {
+        super(type, blockPos, blockState);
     }
-  }
 
-  @Override
-  public void writeToBuf(FriendlyByteBuf data) {
-    super.writeToBuf(data);
-    data.writeEnumSet(this.actionSignalAspects, SignalAspect.class);
-  }
+    public final EnumSet<SignalAspect> getActionSignalAspects() {
+        return this.actionSignalAspects;
+    }
 
-  @Override
-  public void readFromBuf(FriendlyByteBuf data) {
-    super.readFromBuf(data);
-    this.actionSignalAspects.clear();
-    this.actionSignalAspects.addAll(data.readEnumSet(SignalAspect.class));
-  }
+    protected final boolean isActionSignalAspect(SignalAspect signalAspect) {
+        return this.actionSignalAspects.contains(signalAspect);
+    }
+
+    protected final void addActionSignalAspect(SignalAspect signalAspect) {
+        this.actionSignalAspects.add(signalAspect);
+        this.setChanged();
+    }
+
+    protected final void removeActionSignalAspect(SignalAspect signalAspect) {
+        this.actionSignalAspects.remove(signalAspect);
+        this.setChanged();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        var actionAspectsTag = new ListTag();
+        this.actionSignalAspects
+                .forEach(aspect -> actionAspectsTag.add(StringTag.valueOf(aspect.getSerializedName())));
+        tag.put("actionSignalAspects", actionAspectsTag);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        var actionAspectsTag = tag.getList("actionSignalAspects", Tag.TAG_STRING);
+        this.actionSignalAspects.clear();
+        for (var aspectTag : actionAspectsTag) {
+            SignalAspect.getByName(aspectTag.getAsString()).ifPresent(this.actionSignalAspects::add);
+        }
+    }
+
+    @Override
+    public void writeToBuf(FriendlyByteBuf data) {
+        super.writeToBuf(data);
+        SignalAspect[] set = (SignalAspect[]) this.actionSignalAspects.toArray();
+        data.writeInt(set.length);
+        for (var elem : set) {
+            data.writeEnum(elem);
+        }
+//        data.writeEnumSet(this.actionSignalAspects, SignalAspect.class);
+    }
+
+    @Override
+    public void readFromBuf(FriendlyByteBuf data) {
+        super.readFromBuf(data);
+        this.actionSignalAspects.clear();
+        var len = data.readInt();
+        for (int i = 0; i < len; i++) {
+            this.actionSignalAspects.add(data.readEnum(SignalAspect.class));
+        }
+//        this.actionSignalAspects.addAll(data.readEnumSet(SignalAspect.class));
+    }
 }

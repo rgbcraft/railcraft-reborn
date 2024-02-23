@@ -16,160 +16,161 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class RollingRecipe implements Recipe<CraftingContainer> {
-  private final ResourceLocation recipeId;
-  private final int width, height;
-  private final NonNullList<Ingredient> ingredients;
-  private final ItemStack result;
-  private final int processTime;
+    private final ResourceLocation recipeId;
+    private final int width, height;
+    private final NonNullList<Ingredient> ingredients;
+    private final ItemStack result;
+    private final int processTime;
 
-  public RollingRecipe(ResourceLocation recipeId, int width, int height,
-      NonNullList<Ingredient> ingredients, ItemStack result, int processTime) {
-    this.recipeId = recipeId;
-    this.width = width;
-    this.height = height;
-    this.ingredients = ingredients;
-    this.result = result;
-    this.processTime = processTime;
-  }
-
-  /**
-   * Get how long the user should wait before this gets crafted.
-   *
-   * @return tick cost, in int.
-   */
-  public int getProcessTime() {
-    return this.processTime;
-  }
-
-  public int getWidth() {
-    return this.width;
-  }
-
-  public int getHeight() {
-    return this.height;
-  }
-
-  @Override
-  public boolean matches(CraftingContainer inventory, Level level) {
-    for (int i = 0; i <= inventory.getWidth() - this.width; ++i) {
-      for (int j = 0; j <= inventory.getHeight() - this.height; ++j) {
-        if (this.matches(inventory, i, j, true)) {
-          return true;
-        }
-
-        if (this.matches(inventory, i, j, false)) {
-          return true;
-        }
-      }
+    public RollingRecipe(ResourceLocation recipeId, int width, int height,
+                         NonNullList<Ingredient> ingredients, ItemStack result, int processTime) {
+        this.recipeId = recipeId;
+        this.width = width;
+        this.height = height;
+        this.ingredients = ingredients;
+        this.result = result;
+        this.processTime = processTime;
     }
 
-    return false;
-  }
-
-  private boolean matches(CraftingContainer inventory, int x, int y, boolean inverse) {
-    for (int i = 0; i < inventory.getWidth(); ++i) {
-      for (int j = 0; j < inventory.getHeight(); ++j) {
-        int k = i - x;
-        int l = j - y;
-        Ingredient ingredient = Ingredient.EMPTY;
-        if (k >= 0 && l >= 0 && k < this.width && l < this.height) {
-          if (inverse) {
-            ingredient = this.ingredients.get(this.width - k - 1 + l * this.width);
-          } else {
-            ingredient = this.ingredients.get(k + l * this.width);
-          }
-        }
-
-        if (!ingredient.test(inventory.getItem(i + j * inventory.getWidth()))) {
-          return false;
-        }
-      }
+    /**
+     * Get how long the user should wait before this gets crafted.
+     *
+     * @return tick cost, in int.
+     */
+    public int getProcessTime() {
+        return this.processTime;
     }
 
-    return true;
-  }
+    public int getWidth() {
+        return this.width;
+    }
 
-  @Override
-  public ItemStack assemble(CraftingContainer inventory, RegistryAccess registryAccess) {
-    return this.getResultItem(registryAccess).copy();
-  }
-
-  @Override
-  public boolean canCraftInDimensions(int width, int height) {
-    return width >= this.width && height >= this.height;
-  }
-
-  @Override
-  public ItemStack getResultItem(RegistryAccess registryAccess) {
-    return this.result;
-  }
-
-  @Override
-  public NonNullList<Ingredient> getIngredients() {
-    return this.ingredients;
-  }
-
-  @Override
-  public ResourceLocation getId() {
-    return this.recipeId;
-  }
-
-  @Override
-  public RecipeSerializer<?> getSerializer() {
-    return RailcraftRecipeSerializers.ROLLING.get();
-  }
-
-  @Override
-  public RecipeType<?> getType() {
-    return RailcraftRecipeTypes.ROLLING.get();
-  }
-
-  @Override
-  public boolean isSpecial() {
-    return true;
-  }
-
-  @Override
-  public ItemStack getToastSymbol() {
-    return new ItemStack(RailcraftBlocks.MANUAL_ROLLING_MACHINE.get());
-  }
-
-  public static class Serializer implements RecipeSerializer<RollingRecipe> {
-
-    @Override
-    public RollingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-      var map = ShapedRecipe.keyFromJson(GsonHelper.getAsJsonObject(json, "key"));
-      var patterns = ShapedRecipe.shrink(ShapedRecipe.patternFromJson(GsonHelper.getAsJsonArray(json,"pattern")));
-      int width = patterns[0].length();
-      int height = patterns.length;
-
-      int tickCost = GsonHelper.getAsInt(json, "processTime", RollingRecipeBuilder.DEFAULT_PROCESSING_TIME);
-      var ingredients = ShapedRecipe.dissolvePattern(patterns, map, width, height);
-      var resultItemStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json,"result"));
-      return new RollingRecipe(recipeId, width, height, ingredients, resultItemStack, tickCost);
+    public int getHeight() {
+        return this.height;
     }
 
     @Override
-    public RollingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-      int width = buffer.readVarInt();
-      int height = buffer.readVarInt();
-      int tickCost = buffer.readVarInt();
-      var ingredients =
-          buffer.readCollection(NonNullList::createWithCapacity, Ingredient::fromNetwork);
-      var result = buffer.readItem();
+    public boolean matches(CraftingContainer inventory, Level level) {
+        for (int i = 0; i <= inventory.getWidth() - this.width; ++i) {
+            for (int j = 0; j <= inventory.getHeight() - this.height; ++j) {
+                if (this.matches(inventory, i, j, true)) {
+                    return true;
+                }
 
-      return new RollingRecipe(recipeId, width, height, ingredients, result, tickCost);
+                if (this.matches(inventory, i, j, false)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean matches(CraftingContainer inventory, int x, int y, boolean inverse) {
+        for (int i = 0; i < inventory.getWidth(); ++i) {
+            for (int j = 0; j < inventory.getHeight(); ++j) {
+                int k = i - x;
+                int l = j - y;
+                Ingredient ingredient = Ingredient.EMPTY;
+                if (k >= 0 && l >= 0 && k < this.width && l < this.height) {
+                    if (inverse) {
+                        ingredient = this.ingredients.get(this.width - k - 1 + l * this.width);
+                    } else {
+                        ingredient = this.ingredients.get(k + l * this.width);
+                    }
+                }
+
+                if (!ingredient.test(inventory.getItem(i + j * inventory.getWidth()))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buffer, RollingRecipe recipe) {
-      buffer.writeVarInt(recipe.width);
-      buffer.writeVarInt(recipe.height);
-      buffer.writeVarInt(recipe.processTime);
-      buffer.writeCollection(recipe.ingredients, (buf, ingredient) -> ingredient.toNetwork(buffer));
-      buffer.writeItem(recipe.result);
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer inventory) {
+        return this.getResultItem().copy();
     }
-  }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return width >= this.width && height >= this.height;
+    }
+
+    @Override
+    public @NotNull ItemStack getResultItem() {
+        return this.result;
+    }
+
+    @Override
+    public @NotNull NonNullList<Ingredient> getIngredients() {
+        return this.ingredients;
+    }
+
+    @Override
+    public @NotNull ResourceLocation getId() {
+        return this.recipeId;
+    }
+
+    @Override
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return RailcraftRecipeSerializers.ROLLING.get();
+    }
+
+    @Override
+    public @NotNull RecipeType<?> getType() {
+        return RailcraftRecipeTypes.ROLLING.get();
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(RailcraftBlocks.MANUAL_ROLLING_MACHINE.get());
+    }
+
+    public static class Serializer implements RecipeSerializer<RollingRecipe> {
+
+        @Override
+        public @NotNull RollingRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
+            var map = ShapedRecipe.keyFromJson(GsonHelper.getAsJsonObject(json, "key"));
+            var patterns = ShapedRecipe.shrink(ShapedRecipe.patternFromJson(GsonHelper.getAsJsonArray(json, "pattern")));
+            int width = patterns[0].length();
+            int height = patterns.length;
+
+            int tickCost = GsonHelper.getAsInt(json, "processTime", RollingRecipeBuilder.DEFAULT_PROCESSING_TIME);
+            var ingredients = ShapedRecipe.dissolvePattern(patterns, map, width, height);
+            var resultItemStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+            return new RollingRecipe(recipeId, width, height, ingredients, resultItemStack, tickCost);
+        }
+
+        @Override
+        public RollingRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            int width = buffer.readVarInt();
+            int height = buffer.readVarInt();
+            int tickCost = buffer.readVarInt();
+            var ingredients =
+                    buffer.readCollection(NonNullList::createWithCapacity, Ingredient::fromNetwork);
+            var result = buffer.readItem();
+
+            return new RollingRecipe(recipeId, width, height, ingredients, result, tickCost);
+        }
+
+        @Override
+        public void toNetwork(FriendlyByteBuf buffer, RollingRecipe recipe) {
+            buffer.writeVarInt(recipe.width);
+            buffer.writeVarInt(recipe.height);
+            buffer.writeVarInt(recipe.processTime);
+            buffer.writeCollection(recipe.ingredients, (buf, ingredient) -> ingredient.toNetwork(buffer));
+            buffer.writeItem(recipe.result);
+        }
+    }
 }

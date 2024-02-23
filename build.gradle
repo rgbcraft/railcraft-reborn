@@ -61,6 +61,7 @@ sourceSets {
 configurations {
     apiImplementation.extendsFrom(implementation)
     apiRuntimeOnly.extendsFrom(runtimeOnly)
+    extraLibs
 }
 
 minecraft {
@@ -125,7 +126,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    annotationProcessor group: 'org.spongepowered', name: 'mixin', version: mixin_version, classifier: 'processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testAnnotationProcessor group: 'org.spongepowered', name: 'mixin', version: mixin_version, classifier: 'processor'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -136,8 +137,6 @@ dependencies {
 
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:$patchouli_version")
-
-    implementation group: 'org.joml', name: 'joml', version: '1.10.5'
 }
 
 test {
@@ -167,15 +166,15 @@ tasks.named('jar', Jar).configure {
     from([sourceSets.api.output, sourceSets.main.output])
     manifest {
         attributes([
-            'Specification-Title'       : project.name,
-            'Specification-Vendor'      : 'Sm0keySa1m0n, Edivad99',
-            'Specification-Version'     : '1',
-            'Implementation-Title'      : project.name,
-            'Implementation-Version'    : project.version,
-            'Implementation-Vendor'     : 'Sm0keySa1m0n, Edivad99',
-            'Implementation-Commit'     : 'git rev-parse HEAD'.execute().text.trim(),
-            'Implementation-Timestamp'  : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            'MixinConfigs'              : 'railcraft.mixins.json'
+                'Specification-Title'     : project.name,
+                'Specification-Vendor'    : 'Sm0keySa1m0n, Edivad99',
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.version,
+                'Implementation-Vendor'   : 'Sm0keySa1m0n, Edivad99',
+                'Implementation-Commit'   : 'git rev-parse HEAD'.execute().text.trim(),
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'MixinConfigs'            : 'railcraft.mixins.json'
         ])
     }
     finalizedBy 'reobfJar'
@@ -194,7 +193,7 @@ artifacts {
 }
 
 mixin {
-    add sourceSets.main, 'railcraft.refmap.json'
+    add sourceSets.main, 'mixins.railcraft.refmap.json'
 }
 
 def penultimateTag = { ->

@@ -1,28 +1,28 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[43,)"
 license = "https://github.com/railcraft-reborn/railcraft/blob/1.20.x/LICENSE.md"
 issueTrackerURL = "https://github.com/railcraft-reborn/railcraft/issues"
 
 [[mods]]
-  modId = "railcraft"
-  version = "${mod_version}"
-  displayName = "Railcraft Reborn"
-  updateJSONURL = "https://api.modrinth.com/updates/railcraft-reborn/forge_updates.json"
-  logoFile = "pack.png"
-  credits = "Created by CovertJaguar and other contributions at GitHub"
-  modUrl = "https://www.curseforge.com/minecraft/mc-mods/railcraft-reborn"
-  authors = "Sm0keySa1m0n, Edivad99"
-  description = "Redefine your rails"
+modId = "railcraft"
+version = "${mod_version}"
+displayName = "Railcraft Reborn"
+updateJSONURL = "https://api.modrinth.com/updates/railcraft-reborn/forge_updates.json"
+logoFile = "pack.png"
+credits = "Created by CovertJaguar and other contributions at GitHub"
+modUrl = "https://www.curseforge.com/minecraft/mc-mods/railcraft-reborn"
+authors = "Sm0keySa1m0n, Edivad99"
+description = "Redefine your rails"
 
 [[dependencies.railcraft]]
-  mandatory = true
-  modId = "forge"
-  ordering = "AFTER"
-  side = "BOTH"
-  versionRange = "[47,)"
+mandatory = true
+modId = "forge"
+ordering = "AFTER"
+side = "BOTH"
+versionRange = "[43,)"
 [[dependencies.railcraft]]
-  mandatory = true
-  modId = "minecraft"
-  ordering = "NONE"
-  side = "BOTH"
-  versionRange = "[1.20.1,1.21)"
+mandatory = true
+modId = "minecraft"
+ordering = "NONE"
+side = "BOTH"
+versionRange = "[1.19.2,)"

@@ -6,10 +6,12 @@ import com.google.common.base.Suppliers;
 import mods.railcraft.tags.RailcraftTags;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
 
 public enum RailcraftArmorMaterial implements ArmorMaterial {
 
@@ -43,16 +45,16 @@ public enum RailcraftArmorMaterial implements ArmorMaterial {
         this.repairIngredient = Suppliers.memoize(repairIngredient::get);
     }
 
+    @Override
+    public int getDurabilityForSlot(@NotNull EquipmentSlot equipmentSlot) {
+        return HEALTH_PER_SLOT[equipmentSlot.getIndex()] * this.durabilityMultiplier;
+    }
 
-//    @Override
-//    public int getDurabilityForType(ArmorItem.Type type) {
-//        return HEALTH_PER_SLOT[type.getSlot().getIndex()] * this.durabilityMultiplier;
-//    }
-//
-//    @Override
-//    public int getDefenseForType(ArmorItem.Type type) {
-//        return this.slotProtections[type.getSlot().getIndex()];
-//    }
+    @Override
+    public int getDefenseForSlot(EquipmentSlot equipmentSlot) {
+        return this.slotProtections[equipmentSlot.getIndex()];
+    }
+
 
     @Override
     public int getEnchantmentValue() {

@@ -22,105 +22,105 @@ import net.minecraftforge.common.IPlantable;
 
 public class TrackLayer extends MaintenancePatternMinecart {
 
-  private static final int SLOT_STOCK = 0;
-  private static final int SLOT_REPLACE = 0;
-  private static final int[] SLOTS = ContainerTools.buildSlotArray(0, 1);
+    private static final int SLOT_STOCK = 0;
+    private static final int SLOT_REPLACE = 0;
+    private static final int[] SLOTS = ContainerTools.buildSlotArray(0, 1);
 
-  public TrackLayer(EntityType<?> type, Level level) {
-    super(type, level);
-  }
-
-  public TrackLayer(ItemStack itemStack, double x, double y, double z, ServerLevel level) {
-    super(RailcraftEntityTypes.TRACK_LAYER.get(), x, y, z, level);
-  }
-
-  @Override
-  public ItemStack getPickResult() {
-    return RailcraftItems.TRACK_LAYER.get().getDefaultInstance();
-  }
-
-  @Override
-  public Item getDropItem() {
-    return RailcraftItems.TRACK_LAYER.get();
-  }
-
-  @Override
-  protected void moveAlongTrack(BlockPos pos, BlockState state) {
-    super.moveAlongTrack(pos, state);
-    if (this.getLevel().isClientSide()) {
-      return;
+    public TrackLayer(EntityType<?> type, Level level) {
+        super(type, level);
     }
 
-    this.stockItems(SLOT_REPLACE, SLOT_STOCK);
-    this.updateTravelDirection(pos, state);
-    this.travelDirection().ifPresent(direction -> this.placeTrack(pos, direction));
-  }
-
-  private void placeTrack(BlockPos pos, Direction direction) {
-    if (this.mode() == Mode.OFF) {
-      return;
+    public TrackLayer(ItemStack itemStack, double x, double y, double z, ServerLevel level) {
+        super(RailcraftEntityTypes.TRACK_LAYER.get(), x, y, z, level);
     }
 
-    pos = pos.relative(direction);
-
-    var railShape = RailShape.NORTH_SOUTH;
-    if (direction == Direction.EAST || direction == Direction.WEST) {
-      railShape = RailShape.EAST_WEST;
+    @Override
+    public ItemStack getPickResult() {
+        return RailcraftItems.TRACK_LAYER.get().getDefaultInstance();
     }
 
-    if (!this.isValidReplacementBlock(pos)
-        && this.isValidReplacementBlock(pos.above())
-        && !RailShapeUtil.isTurn(railShape)) {
-      pos = pos.above();
+    @Override
+    public Item getDropItem() {
+        return RailcraftItems.TRACK_LAYER.get();
     }
 
-    if (this.isValidReplacementBlock(pos) && this.isValidReplacementBlock(pos.below())) {
-      pos = pos.below();
-      railShape = switch (direction) {
-        case NORTH -> RailShape.ASCENDING_SOUTH;
-        case SOUTH -> RailShape.ASCENDING_NORTH;
-        case WEST -> RailShape.ASCENDING_WEST;
-        case EAST -> RailShape.ASCENDING_EAST;
-        default -> throw new IllegalArgumentException("Unexpected value: " + direction);
-      };
+    @Override
+    protected void moveAlongTrack(BlockPos pos, BlockState state) {
+        super.moveAlongTrack(pos, state);
+        if (this.getLevel().isClientSide()) {
+            return;
+        }
+
+        this.stockItems(SLOT_REPLACE, SLOT_STOCK);
+        this.updateTravelDirection(pos, state);
+        this.travelDirection().ifPresent(direction -> this.placeTrack(pos, direction));
     }
 
-    if (this.isValidNewTrackPosition(pos)) {
-      var targetState = this.getLevel().getBlockState(pos);
-      if (this.placeNewTrack(pos, SLOT_STOCK, railShape)) {
-        Block.dropResources(targetState, this.getLevel(), pos);
-      }
+    private void placeTrack(BlockPos pos, Direction direction) {
+        if (this.mode() == Mode.OFF) {
+            return;
+        }
+
+        pos = pos.relative(direction);
+
+        var railShape = RailShape.NORTH_SOUTH;
+        if (direction == Direction.EAST || direction == Direction.WEST) {
+            railShape = RailShape.EAST_WEST;
+        }
+
+        if (!this.isValidReplacementBlock(pos)
+                && this.isValidReplacementBlock(pos.above())
+                && !RailShapeUtil.isTurn(railShape)) {
+            pos = pos.above();
+        }
+
+        if (this.isValidReplacementBlock(pos) && this.isValidReplacementBlock(pos.below())) {
+            pos = pos.below();
+            railShape = switch (direction) {
+                case NORTH -> RailShape.ASCENDING_SOUTH;
+                case SOUTH -> RailShape.ASCENDING_NORTH;
+                case WEST -> RailShape.ASCENDING_WEST;
+                case EAST -> RailShape.ASCENDING_EAST;
+                default -> throw new IllegalArgumentException("Unexpected value: " + direction);
+            };
+        }
+
+        if (this.isValidNewTrackPosition(pos)) {
+            var targetState = this.getLevel().getBlockState(pos);
+            if (this.placeNewTrack(pos, SLOT_STOCK, railShape)) {
+                Block.dropResources(targetState, this.getLevel(), pos);
+            }
+        }
     }
-  }
 
-  private boolean isValidNewTrackPosition(BlockPos pos) {
-    return this.isValidReplacementBlock(pos)
-        && Block.canSupportRigidBlock(this.getLevel(), pos.below());
-  }
+    private boolean isValidNewTrackPosition(BlockPos pos) {
+        return this.isValidReplacementBlock(pos)
+                && Block.canSupportRigidBlock(this.getLevel(), pos.below());
+    }
 
-  private boolean isValidReplacementBlock(BlockPos pos) {
-    var state = this.getLevel().getBlockState(pos);
-    var block = state.getBlock();
-    return (state.isAir() ||
-        block instanceof IPlantable ||
-        block instanceof IForgeShearable ||
-        TunnelBore.REPLACEABLE_TAGS.stream().anyMatch(state::is) ||
-        TunnelBore.REPLACEABLE_BLOCKS.contains(block));
-  }
+    private boolean isValidReplacementBlock(BlockPos pos) {
+        var state = this.getLevel().getBlockState(pos);
+        var block = state.getBlock();
+        return (state.isAir() ||
+                block instanceof IPlantable ||
+                block instanceof IForgeShearable ||
+                TunnelBore.REPLACEABLE_TAGS.stream().anyMatch(state::is) ||
+                TunnelBore.REPLACEABLE_BLOCKS.contains(block));
+    }
 
-  @Override
-  public int[] getSlotsForFace(Direction side) {
-    return SLOTS;
-  }
+    @Override
+    public int[] getSlotsForFace(Direction side) {
+        return SLOTS;
+    }
 
-  @Override
-  public boolean canPlaceItem(int slot, ItemStack stack) {
-    var trackReplace = this.patternContainer.getItem(SLOT_REPLACE);
-    return ItemStack.isSameItem(stack, trackReplace);
-  }
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        var trackReplace = this.patternContainer.getItem(SLOT_REPLACE);
+        return ItemStack.isSame(stack, trackReplace);
+    }
 
-  @Override
-  protected AbstractContainerMenu createMenu(int id, Inventory inventory) {
-    return new TrackLayerMenu(id, inventory, this);
-  }
+    @Override
+    protected AbstractContainerMenu createMenu(int id, Inventory inventory) {
+        return new TrackLayerMenu(id, inventory, this);
+    }
 }
