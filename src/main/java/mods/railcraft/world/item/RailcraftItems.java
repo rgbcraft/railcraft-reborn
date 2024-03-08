@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import mods.railcraft.api.core.RailcraftConstants;
 import mods.railcraft.util.VariantRegistrar;
@@ -1349,7 +1350,7 @@ public class RailcraftItems {
                                     .stacksTo(1)
                                     .craftRemainder(Items.BUCKET)) {
                         @Override
-                        public ICapabilityProvider initCapabilities(ItemStack stack,
+                        public ICapabilityProvider initCapabilities(@NotNull ItemStack stack,
                                                                     @Nullable CompoundTag nbt) {
                             return new FluidBucketWrapper(stack);
                         }

@@ -17,7 +17,7 @@ public record SetActionSignalBoxAttributesMessage(BlockPos blockPos,
 
     public void encode(FriendlyByteBuf out) {
         out.writeBlockPos(this.blockPos);
-        SignalAspect[] set = (SignalAspect[]) this.actionSignalAspects.toArray();
+        SignalAspect[] set = this.actionSignalAspects.toArray(new SignalAspect[0]);
         out.writeInt(set.length);
         for (var elem : set) {
             out.writeEnum(elem);

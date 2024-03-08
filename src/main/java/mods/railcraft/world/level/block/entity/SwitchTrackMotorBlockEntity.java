@@ -104,7 +104,7 @@ public class SwitchTrackMotorBlockEntity extends LockableSwitchTrackActuatorBloc
     public void writeToBuf(FriendlyByteBuf data) {
         super.writeToBuf(data);
         this.signalReceiver.writeToBuf(data);
-        SignalAspect[] set = (SignalAspect[]) this.actionSignalAspects.toArray();
+        SignalAspect[] set = this.actionSignalAspects.toArray(new SignalAspect[0]);
         data.writeInt(set.length);
         for (var elem : set) {
             data.writeEnum(elem);
