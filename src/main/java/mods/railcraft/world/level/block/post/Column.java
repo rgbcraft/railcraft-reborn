@@ -4,19 +4,20 @@ import net.minecraft.util.StringRepresentable;
 
 public enum Column implements StringRepresentable {
 
-  FULL("full"),
-  TOP("top"),
-  SMALL("small"),
-  PLATFORM("platform");
+    FULL("full"),
+    TOP("top"),
+    SMALL("small"),
+    PLATFORM("platform"),
+    NPLATFORM("n_platform");
 
-  private final String name;
+    private final String name;
 
-  private Column(String name) {
-    this.name = name;
-  }
+    private Column(String name) {
+        this.name = name;
+    }
 
-  @Override
-  public String getSerializedName() {
-    return this.name;
-  }
+    @Override
+    public String getSerializedName() {
+        return this.name;
+    }
 }

@@ -109,6 +109,14 @@
       "when": {
         "west": "double"
       }
+    },
+    {
+      "apply": {
+        "model": "railcraft:block/black_post_n_platform"
+      },
+      "when": {
+        "column": "n_platform"
+      }
     }
   ]
 }

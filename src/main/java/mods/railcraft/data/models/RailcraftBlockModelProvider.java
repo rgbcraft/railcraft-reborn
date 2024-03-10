@@ -231,7 +231,6 @@ public class RailcraftBlockModelProvider extends BlockStateProvider {
             this.createStrengthenedGlass(RailcraftBlocks.STRENGTHENED_GLASS.variantFor(dyeColor).get());
             this.createStrengthenedGlass(RailcraftBlocks.IRON_TANK_GAUGE.variantFor(dyeColor).get());
             this.createStrengthenedGlass(RailcraftBlocks.STEEL_TANK_GAUGE.variantFor(dyeColor).get());
-
             this.createTankValve(RailcraftBlocks.IRON_TANK_VALVE.variantFor(dyeColor).get(),
                     RailcraftBlocks.IRON_TANK_WALL.variantFor(dyeColor).get());
             this.createTankValve(RailcraftBlocks.STEEL_TANK_VALVE.variantFor(dyeColor).get(),
@@ -912,6 +911,7 @@ public class RailcraftBlockModelProvider extends BlockStateProvider {
         var postTopColumnTemplate = this.modLoc("template_post_top_column");
         var postSmallColumnTemplate = this.modLoc("template_post_small_column");
         var postPlatformTemplate = this.modLoc("template_post_platform");
+        var postNPlatformTemplate = this.modLoc("template_post_n_platform");
         var postSingleConnectionTemplate = this.modLoc("template_post_single_connection");
         var postInventoryTemplate = this.modLoc("post_inventory");
 
@@ -926,6 +926,8 @@ public class RailcraftBlockModelProvider extends BlockStateProvider {
                 .singleTexture(this.name(block, "_small_column"), postSmallColumnTemplate, texture);
         var platformModel = this.models()
                 .singleTexture(this.name(block, "_platform"), postPlatformTemplate, texture);
+        var nPlatformModel = this.models()
+                .singleTexture(this.name(block, "_n_platform"), postNPlatformTemplate, texture);
         var singleConnectionModel = this.models()
                 .singleTexture(this.name(block, "_single_connection"), postSingleConnectionTemplate,
                         texture);
@@ -938,6 +940,9 @@ public class RailcraftBlockModelProvider extends BlockStateProvider {
                 .part()
                 .modelFile(platformModel).addModel()
                 .condition(PostBlock.COLUMN, Column.PLATFORM).end()
+                .part()
+                .modelFile(nPlatformModel).addModel()
+                .condition(PostBlock.COLUMN, Column.NPLATFORM).end()
                 .part()
                 .modelFile(topColumnModel).addModel()
                 .condition(PostBlock.COLUMN, Column.TOP).end()

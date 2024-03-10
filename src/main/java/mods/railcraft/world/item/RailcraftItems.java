@@ -64,7 +64,7 @@ public class RailcraftItems {
             VariantRegistrar.from(DyeColor.class, deferredRegister);
 
     static {
-        Function<Block, BlockItem> itemFactory = block -> new BlockItem(block, new Item.Properties());
+        Function<Block, BlockItem> itemFactory = block -> new BlockItem(block, new Item.Properties().tab(CreativeModeTab.TAB_TRANSPORTATION));
         STRENGTHENED_GLASS.registerUsing(RailcraftBlocks.STRENGTHENED_GLASS, itemFactory);
         POST.registerUsing(RailcraftBlocks.POST, itemFactory);
 

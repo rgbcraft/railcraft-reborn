@@ -78,6 +78,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
+import java.io.IOException;
+
 @Mod(RailcraftConstants.ID)
 public class Railcraft {
 
