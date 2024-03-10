@@ -245,6 +245,8 @@ public class RailcraftBlockModelProvider extends BlockStateProvider {
             this.createPost(RailcraftBlocks.POST_EXT.variantFor(variant).get());
         }
 
+        this.simpleBlock(RailcraftBlocks.CONCRETE.get());
+        
         this.simpleBlock(RailcraftBlocks.STEEL_BLOCK.get());
         this.simpleBlock(RailcraftBlocks.BRASS_BLOCK.get());
         this.simpleBlock(RailcraftBlocks.BRONZE_BLOCK.get());

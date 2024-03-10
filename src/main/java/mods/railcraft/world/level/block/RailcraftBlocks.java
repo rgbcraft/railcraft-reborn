@@ -3,6 +3,7 @@ package mods.railcraft.world.level.block;
 import java.util.Collection;
 import java.util.function.ToIntFunction;
 
+import com.enn3developer.railcraft_ext.blocks.ConcreteBlock;
 import com.enn3developer.railcraft_ext.post.PostVariants;
 import mods.railcraft.api.core.RailcraftConstants;
 import mods.railcraft.util.VariantRegistrar;
@@ -224,6 +225,10 @@ public class RailcraftBlocks {
                 .requiresCorrectToolForDrops()
                 .sound(SoundType.METAL));
     }
+
+    public static final RegistryObject<ConcreteBlock> CONCRETE =
+            deferredRegister.register("concrete",
+                    () -> new ConcreteBlock(BlockBehaviour.Properties.copy(Blocks.STONE)));
 
     public static final RegistryObject<SteamBoilerTankBlock> LOW_PRESSURE_STEAM_BOILER_TANK =
             deferredRegister.register("low_pressure_steam_boiler_tank",

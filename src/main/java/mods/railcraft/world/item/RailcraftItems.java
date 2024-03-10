@@ -81,6 +81,11 @@ public class RailcraftItems {
         STEEL_TANK_WALL.registerUsing(RailcraftBlocks.STEEL_TANK_WALL, itemFactory);
     }
 
+    public static final RegistryObject<Item> CONCRETE =
+            deferredRegister.register("concrete",
+                    () -> new BlockItem(RailcraftBlocks.CONCRETE.get(),
+                            new Item.Properties().tab(CreativeModeTab.TAB_TRANSPORTATION)));
+
     public static final RegistryObject<PressureBoilerTankBlockItem> LOW_PRESSURE_STEAM_BOILER_TANK =
             deferredRegister.register("low_pressure_steam_boiler_tank",
                     () -> new PressureBoilerTankBlockItem(
