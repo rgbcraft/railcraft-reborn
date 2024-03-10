@@ -322,6 +322,8 @@ public class RailcraftBlockTagsProvider extends BlockTagsProvider {
                 .forEach(x -> this.tag(RailcraftTags.Blocks.STEEL_TANK_WALL).add(x));
         RailcraftBlocks.POST.resolveVariants()
                 .forEach(x -> this.tag(RailcraftTags.Blocks.POST).add(x));
+        RailcraftBlocks.POST_EXT.resolveVariants()
+                .forEach(x -> this.tag(RailcraftTags.Blocks.POST_EXT).add(x));
 
         this.tag(RailcraftTags.Blocks.QUARRIED)
                 .add(RailcraftBlocks.QUARRIED_STONE.get(),

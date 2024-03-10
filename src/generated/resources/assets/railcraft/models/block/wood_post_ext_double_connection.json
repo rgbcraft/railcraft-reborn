@@ -1,0 +1,6 @@
+{
+  "parent": "railcraft:block/template_post_double_connection",
+  "textures": {
+    "texture": "railcraft:block/wood_post_ext"
+  }
+}

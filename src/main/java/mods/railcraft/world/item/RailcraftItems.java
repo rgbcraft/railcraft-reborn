@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.enn3developer.railcraft_ext.post.PostVariants;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +51,8 @@ public class RailcraftItems {
             VariantRegistrar.from(DyeColor.class, deferredRegister);
     public static final VariantRegistrar<DyeColor, BlockItem> POST =
             VariantRegistrar.from(DyeColor.class, deferredRegister);
+    public static final VariantRegistrar<PostVariants, BlockItem> POST_EXT =
+            VariantRegistrar.from(PostVariants.class, deferredRegister);
     public static final VariantRegistrar<DyeColor, BlockItem> IRON_TANK_GAUGE =
             VariantRegistrar.from(DyeColor.class, deferredRegister);
     public static final VariantRegistrar<DyeColor, BlockItem> IRON_TANK_VALVE =
@@ -67,6 +70,7 @@ public class RailcraftItems {
         Function<Block, BlockItem> itemFactory = block -> new BlockItem(block, new Item.Properties().tab(CreativeModeTab.TAB_TRANSPORTATION));
         STRENGTHENED_GLASS.registerUsing(RailcraftBlocks.STRENGTHENED_GLASS, itemFactory);
         POST.registerUsing(RailcraftBlocks.POST, itemFactory);
+        POST_EXT.registerUsing(RailcraftBlocks.POST_EXT, itemFactory);
 
         IRON_TANK_GAUGE.registerUsing(RailcraftBlocks.IRON_TANK_GAUGE, itemFactory);
         IRON_TANK_VALVE.registerUsing(RailcraftBlocks.IRON_TANK_VALVE, itemFactory);

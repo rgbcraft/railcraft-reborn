@@ -3,6 +3,7 @@ package mods.railcraft.world.level.block;
 import java.util.Collection;
 import java.util.function.ToIntFunction;
 
+import com.enn3developer.railcraft_ext.post.PostVariants;
 import mods.railcraft.api.core.RailcraftConstants;
 import mods.railcraft.util.VariantRegistrar;
 import mods.railcraft.world.level.block.charge.EmptyBatteryBlock;
@@ -139,6 +140,9 @@ public class RailcraftBlocks {
     public static final VariantRegistrar<DyeColor, PostBlock> POST =
             VariantRegistrar.<DyeColor, PostBlock>from(DyeColor.class, deferredRegister)
                     .register("post", RailcraftBlocks::buildPost);
+    public static final VariantRegistrar<PostVariants, PostBlock> POST_EXT =
+            VariantRegistrar.<PostVariants, PostBlock>from(PostVariants.class, deferredRegister)
+                    .register("post_ext", RailcraftBlocks::buildPost);
 
     private static StrengthenedGlassBlock buildStrengthenedGlass() {
         return new StrengthenedGlassBlock(BlockBehaviour.Properties.of(Material.GLASS)

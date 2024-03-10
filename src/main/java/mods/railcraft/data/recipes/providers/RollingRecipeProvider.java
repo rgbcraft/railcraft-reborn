@@ -2,6 +2,7 @@ package mods.railcraft.data.recipes.providers;
 
 import java.util.function.Consumer;
 
+import com.enn3developer.railcraft_ext.post.PostVariants;
 import mods.railcraft.Railcraft;
 import mods.railcraft.data.recipes.builders.RollingRecipeBuilder;
 import mods.railcraft.data.recipes.patterns.RollingRecipePattern;
@@ -40,6 +41,10 @@ public class RollingRecipeProvider extends RecipeProvider {
     private static void misc(Consumer<FinishedRecipe> consumer) {
         RollingRecipePattern.hForm(consumer, Ingredient.of(Tags.Items.INGOTS_IRON),
                 RailcraftItems.POST.variantFor(DyeColor.BLACK).get(), 16);
+        RollingRecipePattern.hForm(consumer, Ingredient.of(Tags.Items.FENCES_WOODEN),
+                RailcraftItems.POST_EXT.variantFor(PostVariants.WOOD).get(), 16);
+        RollingRecipePattern.hForm(consumer, Ingredient.of(Tags.Items.STONE),
+                RailcraftItems.POST_EXT.variantFor(PostVariants.STONE).get(), 16);
 
         RollingRecipePattern.diagonalLine(consumer, Ingredient.of(RailcraftTags.Items.STEEL_PLATE),
                 RailcraftItems.TURBINE_BLADE.get(), 1, "steel_turbine_blade");

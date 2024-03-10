@@ -1,0 +1,18 @@
+{
+  "type": "railcraft:rolling",
+  "key": {
+    "a": {
+      "tag": "forge:stone"
+    }
+  },
+  "pattern": [
+    "a a",
+    "aaa",
+    "a a"
+  ],
+  "processTime": 100,
+  "result": {
+    "count": 16,
+    "item": "railcraft:stone_post_ext"
+  }
+}

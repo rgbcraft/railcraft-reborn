@@ -2,6 +2,7 @@ package mods.railcraft.data.models;
 
 import java.util.function.Function;
 
+import com.enn3developer.railcraft_ext.post.PostVariants;
 import net.minecraft.data.DataGenerator;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
@@ -238,6 +239,10 @@ public class RailcraftBlockModelProvider extends BlockStateProvider {
             this.createCubeColumnBlock(RailcraftBlocks.IRON_TANK_WALL.variantFor(dyeColor).get());
             this.createCubeColumnBlock(RailcraftBlocks.STEEL_TANK_WALL.variantFor(dyeColor).get());
             this.createPost(RailcraftBlocks.POST.variantFor(dyeColor).get());
+        }
+
+        for (var variant : PostVariants.values()) {
+            this.createPost(RailcraftBlocks.POST_EXT.variantFor(variant).get());
         }
 
         this.simpleBlock(RailcraftBlocks.STEEL_BLOCK.get());

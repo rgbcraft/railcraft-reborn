@@ -3,6 +3,7 @@ package mods.railcraft.data;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.enn3developer.railcraft_ext.post.PostVariants;
 import mods.railcraft.Translations;
 import mods.railcraft.api.core.RailcraftConstants;
 import mods.railcraft.season.Season;
@@ -174,6 +175,7 @@ public class RailcraftLanguageProvider extends LanguageProvider {
         this.addBlockColorVariants(RailcraftBlocks.STEEL_TANK_VALVE, "Steel Tank Valve");
         this.addBlockColorVariants(RailcraftBlocks.STEEL_TANK_WALL, "Steel Tank Wall");
 
+        this.addBlockPostVariants(RailcraftBlocks.POST_EXT, "Post");
         this.trackTranslations();
     }
 
@@ -1235,9 +1237,21 @@ public class RailcraftLanguageProvider extends LanguageProvider {
         this.addBlockVariants(blocks, name, RailcraftLanguageProvider::getColorName);
     }
 
+    private void addBlockPostVariants(
+            VariantRegistrar<PostVariants, ? extends Block> blocks, String name) {
+        this.addBlockVariants(blocks, name, RailcraftLanguageProvider::getVariantName);
+    }
+
     private <K extends Enum<K> & StringRepresentable> void addBlockVariants(
             VariantRegistrar<K, ? extends Block> blocks, String name, Function<K, String> nameGetter) {
         blocks.forEach((color, block) -> this.addBlock(block, nameGetter.apply(color) + " " + name));
+    }
+
+    private static String getVariantName(PostVariants variant) {
+        return switch (variant) {
+            case WOOD -> "Wood";
+            case STONE -> "Stone";
+        };
     }
 
     private static String getColorName(DyeColor color) {
