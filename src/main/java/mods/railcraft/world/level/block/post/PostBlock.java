@@ -3,6 +3,7 @@ package mods.railcraft.world.level.block.post;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.enn3developer.railcraft_ext.NUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mods.railcraft.tags.RailcraftTags;
@@ -222,7 +223,7 @@ public class PostBlock extends Block implements SimpleWaterloggedBlock {
         var belowPos = blockPos.below();
         var belowState = level.getBlockState(belowPos);
 
-        if (aboveState.is(BlockTags.RAILS) && belowState.isAir()) {
+        if (aboveState.is(BlockTags.RAILS) && NUtils.isAirOrLike(belowState)) {
             return Column.NPLATFORM;
         } else if (aboveState.is(BlockTags.RAILS)) {
             return Column.PLATFORM;
