@@ -224,48 +224,48 @@ public class ClientManager {
     }
 
     @SuppressWarnings("unused")
-    @SubscribeEvent
-    static void handleClientLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
-        var modInfo = ModList.get().getModFileById(RailcraftConstants.ID).getMods().get(0);
-        var result = VersionChecker.getResult(modInfo);
-        var versionStatus = result.status();
-
-        if (versionStatus.shouldDraw()) {
-            var newVersion = result.target().toString();
-            var modUrl = modInfo.getModURL().get().toString();
-            var message = Component.literal(RailcraftConstants.NAME + ": ").withStyle(ChatFormatting.GREEN)
-                    .append(Component.literal(
-                                    "A new version (%s) is available to download.".formatted(newVersion))
-                            .withStyle(style -> style
-                                    .withColor(ChatFormatting.WHITE)
-                                    .withUnderlined(true)
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, modUrl))));
-            event.getPlayer().displayClientMessage(message, false);
-        }
-
-        if (!FMLLoader.isProduction()
-                || (Railcraft.BETA && RailcraftConfig.CLIENT.showMessageBeta.get())) {
-            var type = FMLLoader.isProduction() ? "beta" : "development";
-            var issueUrl = ((ModFileInfo) (modInfo.getOwningFile())).getIssueURL().toString();
-            var message = CommonComponents.joinLines(
-                    Component.literal("You are using a %s version of %s.".formatted(type, RailcraftConstants.NAME))
-                            .withStyle(ChatFormatting.RED),
-        /*Component.literal("- World saves are not stable and may break between versions.")
-            .withStyle(ChatFormatting.GRAY),*/
-                    Component.literal("- Features might be missing or only partially implemented.")
-                            .withStyle(ChatFormatting.GRAY),
-        /*Component.literal("You have been warned.")
-            .withStyle(ChatFormatting.RED, ChatFormatting.ITALIC),*/
-                    Component.literal("Bug reports are welcome at our issue tracker.")
-                            .withStyle(style -> style
-                                    .withColor(ChatFormatting.GREEN)
-                                    .withUnderlined(true)
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, issueUrl))),
-                    Component.literal("- Sm0keySa1m0n, Edivad99")
-                            .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-            event.getPlayer().displayClientMessage(message, false);
-        }
-    }
+//    @SubscribeEvent
+//    static void handleClientLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
+//        var modInfo = ModList.get().getModFileById(RailcraftConstants.ID).getMods().get(0);
+//        var result = VersionChecker.getResult(modInfo);
+//        var versionStatus = result.status();
+//
+//        if (versionStatus.shouldDraw()) {
+//            var newVersion = result.target().toString();
+//            var modUrl = modInfo.getModURL().get().toString();
+//            var message = Component.literal(RailcraftConstants.NAME + ": ").withStyle(ChatFormatting.GREEN)
+//                    .append(Component.literal(
+//                                    "A new version (%s) is available to download.".formatted(newVersion))
+//                            .withStyle(style -> style
+//                                    .withColor(ChatFormatting.WHITE)
+//                                    .withUnderlined(true)
+//                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, modUrl))));
+//            event.getPlayer().displayClientMessage(message, false);
+//        }
+//
+//        if (!FMLLoader.isProduction()
+//                || (Railcraft.BETA && RailcraftConfig.CLIENT.showMessageBeta.get())) {
+//            var type = FMLLoader.isProduction() ? "beta" : "development";
+//            var issueUrl = ((ModFileInfo) (modInfo.getOwningFile())).getIssueURL().toString();
+//            var message = CommonComponents.joinLines(
+//                    Component.literal("You are using a %s version of %s.".formatted(type, RailcraftConstants.NAME))
+//                            .withStyle(ChatFormatting.RED),
+//        /*Component.literal("- World saves are not stable and may break between versions.")
+//            .withStyle(ChatFormatting.GRAY),*/
+//                    Component.literal("- Features might be missing or only partially implemented.")
+//                            .withStyle(ChatFormatting.GRAY),
+//        /*Component.literal("You have been warned.")
+//            .withStyle(ChatFormatting.RED, ChatFormatting.ITALIC),*/
+//                    Component.literal("Bug reports are welcome at our issue tracker.")
+//                            .withStyle(style -> style
+//                                    .withColor(ChatFormatting.GREEN)
+//                                    .withUnderlined(true)
+//                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, issueUrl))),
+//                    Component.literal("- Sm0keySa1m0n, Edivad99")
+//                            .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+//            event.getPlayer().displayClientMessage(message, false);
+//        }
+//    }
 
     @SubscribeEvent
     static void handleItemTooltip(ItemTooltipEvent event) {
