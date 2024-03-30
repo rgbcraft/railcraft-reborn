@@ -1,6 +1,7 @@
 package mods.railcraft.world.level.block.entity;
 
 import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.mojang.authlib.GameProfile;
@@ -28,189 +29,189 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class RailcraftBlockEntity extends BlockEntity
-    implements NetworkSerializable, Ownable, BlockEntityLike, BlockModuleProvider {
+        implements NetworkSerializable, Ownable, BlockEntityLike, BlockModuleProvider {
 
-  protected final ModuleDispatcher moduleDispatcher = new ModuleDispatcher();
+    protected final ModuleDispatcher moduleDispatcher = new ModuleDispatcher();
 
-  @Nullable
-  private GameProfile owner;
+    @Nullable
+    private GameProfile owner;
 
-  @Nullable
-  private Component customName;
+    @Nullable
+    private Component customName;
 
-  public RailcraftBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
-    super(type, blockPos, blockState);
-  }
-
-  @Override
-  public final ClientboundBlockEntityDataPacket getUpdatePacket() {
-    return ClientboundBlockEntityDataPacket.create(this);
-  }
-
-  @Override
-  public final CompoundTag getUpdateTag() {
-    CompoundTag nbt = super.getUpdateTag();
-    FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-    this.writeToBuf(packetBuffer);
-    byte[] syncData = new byte[packetBuffer.readableBytes()];
-    packetBuffer.readBytes(syncData);
-    nbt.putByteArray("sync", syncData);
-    return nbt;
-  }
-
-  @Override
-  public final void handleUpdateTag(CompoundTag tag) {
-    byte[] bytes = tag.getByteArray("sync");
-    this.readFromBuf(new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes)));
-  }
-
-  @Override
-  public final void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
-    this.handleUpdateTag(packet.getTag());
-  }
-
-  @Override
-  public void writeToBuf(FriendlyByteBuf out) {
-    out.writeNullable(this.owner, FriendlyByteBuf::writeGameProfile);
-    out.writeNullable(this.customName, FriendlyByteBuf::writeComponent);
-    this.moduleDispatcher.writeToBuf(out);
-  }
-
-  @Override
-  public void readFromBuf(FriendlyByteBuf in) {
-    this.owner = in.readNullable(FriendlyByteBuf::readGameProfile);
-    this.customName = in.readNullable(FriendlyByteBuf::readComponent);
-    this.moduleDispatcher.readFromBuf(in);
-  }
-
-  @Override
-  public BlockPos blockPos() {
-    return this.getBlockPos();
-  }
-
-  @Override
-  public Level level() {
-    return this.getLevel();
-  }
-
-  @Override
-  public void syncToClient() {
-    if (this.level instanceof ServerLevel serverLevel) {
-      var packet = this.getUpdatePacket();
-      NetworkChannel.sendToTrackingChunk(packet, serverLevel, this.getBlockPos());
-    }
-  }
-
-  @Override
-  public void save() {
-    this.setChanged();
-  }
-
-  @Override
-  public <T extends Module> Optional<T> getModule(Class<T> type) {
-    return this.moduleDispatcher.getModule(type);
-  }
-
-  @Override
-  public boolean isStillValid(Player player) {
-    return isStillValid(this, player, 64);
-  }
-
-  public final void setOwner(@Nullable GameProfile profile) {
-    this.owner = profile;
-  }
-
-  @Override
-  @NotNull
-  public final Optional<GameProfile> getOwner() {
-    return Optional.ofNullable(this.owner);
-  }
-
-  public final boolean isOwner(@NotNull GameProfile gameProfile) {
-    return gameProfile.equals(this.owner);
-  }
-
-  public final boolean isOwnerOrOperator(@NotNull GameProfile gameProfile) {
-    return this.isOwner(gameProfile) || (!this.level.isClientSide()
-        && ((ServerLevel) this.level).getServer().getPlayerList().isOp(gameProfile));
-  }
-
-  @Override
-  protected void saveAdditional(CompoundTag tag) {
-    super.saveAdditional(tag);
-    if (this.owner != null) {
-      var ownerTag = new CompoundTag();
-      NbtUtils.writeGameProfile(ownerTag, this.owner);
-      tag.put("owner", ownerTag);
-    }
-    if (this.customName != null) {
-      tag.putString("customName", Component.Serializer.toJson(this.customName));
+    public RailcraftBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
+        super(type, blockPos, blockState);
     }
 
-    tag.put("modules", this.moduleDispatcher.serializeNBT());
-  }
-
-  @Override
-  public void load(CompoundTag tag) {
-    super.load(tag);
-    if (tag.contains("owner", Tag.TAG_COMPOUND)) {
-      this.owner = NbtUtils.readGameProfile(tag.getCompound("owner"));
-    }
-    if (tag.contains("customName", Tag.TAG_STRING)) {
-      this.customName = Component.Serializer.fromJson(tag.getString("customName"));
+    @Override
+    public final ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    this.moduleDispatcher.deserializeNBT(tag.getCompound("modules"));
-  }
+    @Override
+    public final CompoundTag getUpdateTag() {
+        CompoundTag nbt = super.getUpdateTag();
+        FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+        this.writeToBuf(packetBuffer);
+        byte[] syncData = new byte[packetBuffer.readableBytes()];
+        packetBuffer.readBytes(syncData);
+        nbt.putByteArray("sync", syncData);
+        return nbt;
+    }
 
-  public final int getX() {
-    return this.getBlockPos().getX();
-  }
+    @Override
+    public final void handleUpdateTag(CompoundTag tag) {
+        byte[] bytes = tag.getByteArray("sync");
+        this.readFromBuf(new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes)));
+    }
 
-  public final int getY() {
-    return this.getBlockPos().getY();
-  }
+    @Override
+    public final void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
+        this.handleUpdateTag(packet.getTag());
+    }
 
-  public final int getZ() {
-    return this.getBlockPos().getZ();
-  }
+    @Override
+    public void writeToBuf(FriendlyByteBuf out) {
+        out.writeNullable(this.owner, FriendlyByteBuf::writeGameProfile);
+        out.writeNullable(this.customName, FriendlyByteBuf::writeComponent);
+        this.moduleDispatcher.writeToBuf(out);
+    }
 
-  @Override
-  public boolean hasCustomName() {
-    return this.customName != null;
-  }
+    @Override
+    public void readFromBuf(FriendlyByteBuf in) {
+        this.owner = in.readNullable(FriendlyByteBuf::readGameProfile);
+        this.customName = in.readNullable(FriendlyByteBuf::readComponent);
+        this.moduleDispatcher.readFromBuf(in);
+    }
 
-  @Override
-  @Nullable
-  public Component getCustomName() {
-    return this.customName;
-  }
+    @Override
+    public BlockPos blockPos() {
+        return this.getBlockPos();
+    }
 
-  protected void setCustomName(@Nullable Component name) {
-    this.customName = name;
-    this.syncToClient();
-  }
+    @Override
+    public Level level() {
+        return this.getLevel();
+    }
 
-  @Override
-  public Component getName() {
-    return this.hasCustomName() ? this.customName : this.getBlockState().getBlock().getName();
-  }
+    @Override
+    public void syncToClient() {
+        if (this.level instanceof ServerLevel serverLevel) {
+            var packet = this.getUpdatePacket();
+            NetworkChannel.sendToTrackingChunk(packet, serverLevel, this.getBlockPos());
+        }
+    }
 
-  @Override
-  public Component getDisplayName() {
-    return this.getName();
-  }
+    @Override
+    public void save() {
+        this.setChanged();
+    }
 
-  @Override
-  public final BlockEntity asBlockEntity() {
-    return this;
-  }
+    @Override
+    public <T extends Module> Optional<T> getModule(Class<T> type) {
+        return this.moduleDispatcher.getModule(type);
+    }
 
-  public static boolean isStillValid(BlockEntity blockEntity, Player player, int maxDistance) {
-    var pos = blockEntity.getBlockPos();
-    var distance = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
-    return !blockEntity.isRemoved()
-        && blockEntity.getLevel().getBlockEntity(pos).equals(blockEntity)
-        && distance <= maxDistance;
-  }
+    @Override
+    public boolean isStillValid(Player player) {
+        return isStillValid(this, player, 64);
+    }
+
+    public final void setOwner(@Nullable GameProfile profile) {
+        this.owner = profile;
+    }
+
+    @Override
+    @NotNull
+    public final Optional<GameProfile> getOwner() {
+        return Optional.ofNullable(this.owner);
+    }
+
+    public final boolean isOwner(@NotNull GameProfile gameProfile) {
+        return gameProfile.equals(this.owner);
+    }
+
+    public final boolean isOwnerOrOperator(@NotNull GameProfile gameProfile) {
+        return this.isOwner(gameProfile) || (!this.level.isClientSide()
+                && ((ServerLevel) this.level).getServer().getPlayerList().isOp(gameProfile));
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (this.owner != null) {
+            var ownerTag = new CompoundTag();
+            NbtUtils.writeGameProfile(ownerTag, this.owner);
+            tag.put("owner", ownerTag);
+        }
+        if (this.customName != null) {
+            tag.putString("customName", Component.Serializer.toJson(this.customName));
+        }
+
+        tag.put("modules", this.moduleDispatcher.serializeNBT());
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains("owner", Tag.TAG_COMPOUND)) {
+            this.owner = NbtUtils.readGameProfile(tag.getCompound("owner"));
+        }
+        if (tag.contains("customName", Tag.TAG_STRING)) {
+            this.customName = Component.Serializer.fromJson(tag.getString("customName"));
+        }
+
+        this.moduleDispatcher.deserializeNBT(tag.getCompound("modules"));
+    }
+
+    public final int getX() {
+        return this.getBlockPos().getX();
+    }
+
+    public final int getY() {
+        return this.getBlockPos().getY();
+    }
+
+    public final int getZ() {
+        return this.getBlockPos().getZ();
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return this.customName != null;
+    }
+
+    @Override
+    @Nullable
+    public Component getCustomName() {
+        return this.customName;
+    }
+
+    protected void setCustomName(@Nullable Component name) {
+        this.customName = name;
+        this.syncToClient();
+    }
+
+    @Override
+    public Component getName() {
+        return this.hasCustomName() ? this.customName : this.getBlockState().getBlock().getName();
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return this.getName();
+    }
+
+    @Override
+    public final BlockEntity asBlockEntity() {
+        return this;
+    }
+
+    public static boolean isStillValid(BlockEntity blockEntity, Player player, int maxDistance) {
+        var pos = blockEntity.getBlockPos();
+        var distance = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
+        return !blockEntity.isRemoved()
+                && blockEntity.getLevel().getBlockEntity(pos).equals(blockEntity)
+                && distance <= maxDistance;
+    }
 }
