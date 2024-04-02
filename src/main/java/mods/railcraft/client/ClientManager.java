@@ -43,7 +43,7 @@ import mods.railcraft.client.particle.SparkParticle;
 import mods.railcraft.client.particle.SteamParticle;
 import mods.railcraft.client.particle.TuningAuraParticle;
 import mods.railcraft.client.renderer.ShuntingAuraRenderer;
-import mods.railcraft.client.renderer.blockentity.RailcraftBlockEntityRenderers;
+import mods.railcraft.client.renderer.blockentity.*;
 import mods.railcraft.client.renderer.entity.RailcraftEntityRenderers;
 import mods.railcraft.integrations.patchouli.Patchouli;
 import mods.railcraft.particle.RailcraftParticleTypes;
@@ -62,14 +62,9 @@ import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.GrassColor;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -88,6 +83,7 @@ public class ClientManager {
 
     public static void init(IEventBus modEventBus) {
         modEventBus.addListener(ClientManager::handleClientSetup);
+        modEventBus.addListener(ClientManager::handleTextureStitch);
         modEventBus.addListener(ClientManager::handleItemColors);
         modEventBus.addListener(ClientManager::handleBlockColors);
         modEventBus.addListener(ClientManager::handleParticleRegistration);
@@ -108,6 +104,23 @@ public class ClientManager {
     // ================================================================================
     // Mod Events
     // ================================================================================
+
+    private static void handleTextureStitch(TextureStitchEvent.Pre event) {
+        if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
+            AbstractSignalRenderer.ASPECT_TEXTURE_LOCATIONS.values().forEach(event::addSprite);
+            AbstractSignalBoxRenderer.ASPECT_TEXTURE_LOCATIONS.values().forEach(event::addSprite);
+            event.addSprite(SignalControllerBoxRenderer.TEXTURE_LOCATION);
+            event.addSprite(SignalCapacitorBoxRenderer.TEXTURE_LOCATION);
+            event.addSprite(SignalReceiverBoxRenderer.TEXTURE_LOCATION);
+            event.addSprite(SignalBlockRelayBoxRenderer.TEXTURE_LOCATION);
+            event.addSprite(AbstractSignalBoxRenderer.BOTTOM_TEXTURE_LOCATION);
+            event.addSprite(AbstractSignalBoxRenderer.CONNECTED_SIDE_TEXTURE_LOCATION);
+            event.addSprite(AbstractSignalBoxRenderer.SIDE_TEXTURE_LOCATION);
+            event.addSprite(FluidManipulatorRenderer.INTERIOR_TEXTURE_LOCATION);
+            event.addSprite(FluidLoaderRenderer.PIPE_END_TEXTURE_LOCATION);
+            event.addSprite(FluidLoaderRenderer.PIPE_SIDE_TEXTURE_LOCATION);
+        }
+    }
 
     private static void handleClientSetup(FMLClientSetupEvent event) {
         // === Menu Screens ===

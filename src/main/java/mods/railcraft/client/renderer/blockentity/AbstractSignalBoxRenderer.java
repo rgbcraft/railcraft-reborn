@@ -1,6 +1,7 @@
 package mods.railcraft.client.renderer.blockentity;
 
 import java.util.Map;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.railcraft.Railcraft;
 import mods.railcraft.api.signal.SignalAspect;
@@ -20,85 +21,85 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 
 public abstract class AbstractSignalBoxRenderer
-    implements BlockEntityRenderer<AbstractSignalBoxBlockEntity> {
+        implements BlockEntityRenderer<AbstractSignalBoxBlockEntity> {
 
-  private static final Map<SignalAspect, ResourceLocation> ASPECT_TEXTURE_LOCATIONS = Map.of(
-      SignalAspect.OFF, Railcraft.rl("entity/signal_box_aspect/off"),
-      SignalAspect.RED, Railcraft.rl("entity/signal_box_aspect/red"),
-      SignalAspect.YELLOW, Railcraft.rl("entity/signal_box_aspect/yellow"),
-      SignalAspect.GREEN, Railcraft.rl("entity/signal_box_aspect/green"));
+    public static final Map<SignalAspect, ResourceLocation> ASPECT_TEXTURE_LOCATIONS = Map.of(
+            SignalAspect.OFF, Railcraft.rl("entity/signal_box_aspect/off"),
+            SignalAspect.RED, Railcraft.rl("entity/signal_box_aspect/red"),
+            SignalAspect.YELLOW, Railcraft.rl("entity/signal_box_aspect/yellow"),
+            SignalAspect.GREEN, Railcraft.rl("entity/signal_box_aspect/green"));
 
-  private static final ResourceLocation SIDE_TEXTURE_LOCATION =
-      Railcraft.rl("entity/signal_box/side");
-  private static final ResourceLocation CONNECTED_SIDE_TEXTURE_LOCATION =
-      Railcraft.rl("entity/signal_box/connected_side");
-  private static final ResourceLocation BOTTOM_TEXTURE_LOCATION =
-      Railcraft.rl("entity/signal_box/bottom");
+    public static final ResourceLocation SIDE_TEXTURE_LOCATION =
+            Railcraft.rl("entity/signal_box/side");
+    public static final ResourceLocation CONNECTED_SIDE_TEXTURE_LOCATION =
+            Railcraft.rl("entity/signal_box/connected_side");
+    public static final ResourceLocation BOTTOM_TEXTURE_LOCATION =
+            Railcraft.rl("entity/signal_box/bottom");
 
-  private final CuboidModel model =
-      new CuboidModel(2 / 16.0F, 0, 2 / 16.0F, 14 / 16.0F, 15 / 16.0F, 14 / 16.0F);
+    private final CuboidModel model =
+            new CuboidModel(2 / 16.0F, 0, 2 / 16.0F, 14 / 16.0F, 15 / 16.0F, 14 / 16.0F);
 
-  protected abstract ResourceLocation getTopTextureLocation();
+    protected abstract ResourceLocation getTopTextureLocation();
 
-  @Override
-  public int getViewDistance() {
-    return 512;
-  }
-
-  @Override
-  public void render(AbstractSignalBoxBlockEntity blockEntity, float partialTicks,
-      PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
-      int packedOverlay) {
-
-    SignalAuraRenderUtil.tryRenderSignalAura(blockEntity, poseStack, bufferSource);
-
-    if (blockEntity.hasCustomName()) {
-      RenderUtil.renderBlockHoverText(blockEntity.getBlockPos(),
-          blockEntity.getCustomName(), poseStack, bufferSource, packedLight);
+    @Override
+    public int getViewDistance() {
+        return 512;
     }
 
-    var spriteGetter = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+    @Override
+    public void render(AbstractSignalBoxBlockEntity blockEntity, float partialTicks,
+                       PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,
+                       int packedOverlay) {
 
-    this.model.setPackedLight(packedLight);
-    this.model.setPackedOverlay(packedOverlay);
+        SignalAuraRenderUtil.tryRenderSignalAura(blockEntity, poseStack, bufferSource);
 
-    this.model.set(Direction.UP, this.model.new Face()
-        .setSprite(spriteGetter.apply(this.getTopTextureLocation()))
-        .setSize(16));
-    this.model.set(Direction.DOWN, this.model.new Face()
-        .setSprite(spriteGetter.apply(BOTTOM_TEXTURE_LOCATION))
-        .setSize(16));
+        if (blockEntity.hasCustomName()) {
+            RenderUtil.renderBlockHoverText(blockEntity.getBlockPos(),
+                    blockEntity.getCustomName(), poseStack, bufferSource, packedLight);
+        }
 
-    for (var direction : Direction.Plane.HORIZONTAL) {
-      var isConnected = SignalBoxBlock.isConnected(blockEntity.getBlockState(), direction);
-      this.model.set(direction, this.model.new Face()
-          .setSprite(spriteGetter.apply(isConnected
-              ? CONNECTED_SIDE_TEXTURE_LOCATION
-              : SIDE_TEXTURE_LOCATION))
-          .setSize(16));
+        var spriteGetter = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+
+        this.model.setPackedLight(packedLight);
+        this.model.setPackedOverlay(packedOverlay);
+
+        this.model.set(Direction.UP, this.model.new Face()
+                .setSprite(spriteGetter.apply(this.getTopTextureLocation()))
+                .setSize(16));
+        this.model.set(Direction.DOWN, this.model.new Face()
+                .setSprite(spriteGetter.apply(BOTTOM_TEXTURE_LOCATION))
+                .setSize(16));
+
+        for (var direction : Direction.Plane.HORIZONTAL) {
+            var isConnected = SignalBoxBlock.isConnected(blockEntity.getBlockState(), direction);
+            this.model.set(direction, this.model.new Face()
+                    .setSprite(spriteGetter.apply(isConnected
+                            ? CONNECTED_SIDE_TEXTURE_LOCATION
+                            : SIDE_TEXTURE_LOCATION))
+                    .setSize(16));
+        }
+
+        var vertexConsumer =
+                bufferSource.getBuffer(RenderType.entityCutout(InventoryMenu.BLOCK_ATLAS));
+        CuboidModelRenderer.render(this.model, poseStack, vertexConsumer,
+                0xFFFFFFFF, FaceDisplay.BOTH, false);
+
+        for (var direction : Direction.Plane.HORIZONTAL) {
+            if (SignalBoxBlock.isConnected(blockEntity.getBlockState(), direction)) {
+                this.model.disable(direction);
+            } else {
+                var aspect = blockEntity.getSignalAspect(direction).getDisplayAspect();
+                final int skyLight = LightTexture.sky(packedLight);
+                final int facePackedLight = LightTexture.pack(aspect.getLampLight(), skyLight);
+                this.model.set(direction, this.model.new Face()
+                        .setSprite(spriteGetter.apply(ASPECT_TEXTURE_LOCATIONS.get(aspect)))
+                        .setSize(16)
+                        .setPackedLight(facePackedLight)
+                        .setPackedOverlay(packedOverlay));
+            }
+        }
+
+        CuboidModelRenderer.render(this.model, poseStack, vertexConsumer,
+                0xFFFFFFFF, FaceDisplay.BOTH, false);
     }
-
-    var vertexConsumer =
-        bufferSource.getBuffer(RenderType.entityCutout(InventoryMenu.BLOCK_ATLAS));
-    CuboidModelRenderer.render(this.model, poseStack, vertexConsumer,
-        0xFFFFFFFF, FaceDisplay.BOTH, false);
-
-    for (var direction : Direction.Plane.HORIZONTAL) {
-      if (SignalBoxBlock.isConnected(blockEntity.getBlockState(), direction)) {
-        this.model.disable(direction);
-      } else {
-        var aspect = blockEntity.getSignalAspect(direction).getDisplayAspect();
-        final int skyLight = LightTexture.sky(packedLight);
-        final int facePackedLight = LightTexture.pack(aspect.getLampLight(), skyLight);
-        this.model.set(direction, this.model.new Face()
-            .setSprite(spriteGetter.apply(ASPECT_TEXTURE_LOCATIONS.get(aspect)))
-            .setSize(16)
-            .setPackedLight(facePackedLight)
-            .setPackedOverlay(packedOverlay));
-      }
-    }
-
-    CuboidModelRenderer.render(this.model, poseStack, vertexConsumer,
-        0xFFFFFFFF, FaceDisplay.BOTH, false);
-  }
 }

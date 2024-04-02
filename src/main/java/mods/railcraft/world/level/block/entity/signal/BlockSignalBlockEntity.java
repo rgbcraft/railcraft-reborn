@@ -14,87 +14,87 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockSignalBlockEntity extends AbstractSignalBlockEntity
-    implements SignalControllerEntity, BlockSignalEntity {
+        implements SignalControllerEntity, BlockSignalEntity {
 
-  private final SimpleSignalController signalController =
-      new SimpleSignalController(1, this::syncToClient, this, false,
-          __ -> this.level.getLightEngine().checkBlock(this.getBlockPos()));
-  private final SimpleBlockSignalNetwork blockSignal =
-      new SimpleBlockSignalNetwork(1, this::syncToClient, this.signalController::setSignalAspect,
-          this);
+    private final SimpleSignalController signalController =
+            new SimpleSignalController(1, this::syncToClient, this, false,
+                    __ -> this.level.getLightEngine().checkBlock(this.getBlockPos()));
+    private final SimpleBlockSignalNetwork blockSignal =
+            new SimpleBlockSignalNetwork(1, this::syncToClient, this.signalController::setSignalAspect,
+                    this);
 
-  public BlockSignalBlockEntity(BlockPos blockPos, BlockState blockState) {
-    this(RailcraftBlockEntityTypes.BLOCK_SIGNAL.get(), blockPos, blockState);
-  }
-
-  public BlockSignalBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
-    super(type, blockPos, blockState);
-  }
-
-  public void blockRemoved() {
-    this.signalController.destroy();
-    this.blockSignal.destroy();
-  }
-
-  @Override
-  public void onLoad() {
-    super.onLoad();
-    if (!this.level.isClientSide()) {
-      this.signalController.refresh();
-      this.blockSignal.refresh();
+    public BlockSignalBlockEntity(BlockPos blockPos, BlockState blockState) {
+        this(RailcraftBlockEntityTypes.BLOCK_SIGNAL.get(), blockPos, blockState);
     }
-  }
 
-  @Override
-  public SignalAspect getPrimarySignalAspect() {
-    return this.blockSignal.aspect();
-  }
+    public BlockSignalBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
+        super(type, blockPos, blockState);
+    }
 
-  @Override
-  protected void saveAdditional(CompoundTag tag) {
-    super.saveAdditional(tag);
-    tag.put("blockSignal", this.blockSignal.serializeNBT());
-    tag.put("signalController", this.signalController.serializeNBT());
-  }
+    public void blockRemoved() {
+        this.signalController.destroy();
+        this.blockSignal.destroy();
+    }
 
-  @Override
-  public void load(CompoundTag tag) {
-    super.load(tag);
-    this.blockSignal.deserializeNBT(tag.getCompound("blockSignal"));
-    this.signalController.deserializeNBT(tag.getCompound("signalController"));
-  }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!this.level.isClientSide()) {
+            this.signalController.refresh();
+            this.blockSignal.refresh();
+        }
+    }
 
-  @Override
-  public void writeToBuf(FriendlyByteBuf data) {
-    super.writeToBuf(data);
-    this.blockSignal.writeToBuf(data);
-    this.signalController.writeToBuf(data);
-  }
+    @Override
+    public SignalAspect getPrimarySignalAspect() {
+        return this.blockSignal.aspect();
+    }
 
-  @Override
-  public void readFromBuf(FriendlyByteBuf data) {
-    super.readFromBuf(data);
-    this.blockSignal.readFromBuf(data);
-    this.signalController.readFromBuf(data);
-  }
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        tag.put("blockSignal", this.blockSignal.serializeNBT());
+        tag.put("signalController", this.signalController.serializeNBT());
+    }
 
-  @Override
-  public SimpleSignalController getSignalController() {
-    return this.signalController;
-  }
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.blockSignal.deserializeNBT(tag.getCompound("blockSignal"));
+        this.signalController.deserializeNBT(tag.getCompound("signalController"));
+    }
 
-  @Override
-  public SimpleBlockSignalNetwork signalNetwork() {
-    return this.blockSignal;
-  }
+    @Override
+    public void writeToBuf(FriendlyByteBuf data) {
+        super.writeToBuf(data);
+        this.blockSignal.writeToBuf(data);
+        this.signalController.writeToBuf(data);
+    }
 
-  public static void clientTick(Level level, BlockPos blockPos, BlockState blockState,
-      BlockSignalBlockEntity blockEntity) {
-    blockEntity.signalController.spawnTuningAuraParticles();
-  }
+    @Override
+    public void readFromBuf(FriendlyByteBuf data) {
+        super.readFromBuf(data);
+        this.blockSignal.readFromBuf(data);
+        this.signalController.readFromBuf(data);
+    }
 
-  public static void serverTick(Level level, BlockPos blockPos, BlockState blockState,
-      BlockSignalBlockEntity blockEntity) {
-    blockEntity.blockSignal.serverTick();
-  }
+    @Override
+    public SimpleSignalController getSignalController() {
+        return this.signalController;
+    }
+
+    @Override
+    public SimpleBlockSignalNetwork signalNetwork() {
+        return this.blockSignal;
+    }
+
+    public static void clientTick(Level level, BlockPos blockPos, BlockState blockState,
+                                  BlockSignalBlockEntity blockEntity) {
+        blockEntity.signalController.spawnTuningAuraParticles();
+    }
+
+    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState,
+                                  BlockSignalBlockEntity blockEntity) {
+        blockEntity.blockSignal.serverTick();
+    }
 }
