@@ -64,7 +64,6 @@ public class SteamBoilerBlockEntity
 
     public SteamBoilerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState, SteamBoilerBlockEntity.class, PATTERNS);
-        System.out.println("instancing steam boiler entity");
     }
 
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState,
@@ -75,7 +74,6 @@ public class SteamBoilerBlockEntity
 
     @Override
     public InteractionResult use(ServerPlayer player, InteractionHand hand) {
-        System.out.println("using steam boiler");
         return FluidUtil.interactWithFluidHandler(player, hand,
                 this.getModule(SteamBoilerModule.class).get().getTankManager())
                 ? InteractionResult.CONSUME

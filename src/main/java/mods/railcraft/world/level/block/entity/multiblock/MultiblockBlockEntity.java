@@ -57,6 +57,9 @@ public abstract class MultiblockBlockEntity<T extends MultiblockBlockEntity<T, M
     @Nullable
     private UnresolvedMembership unresolvedMembership;
 
+    private static final int ticksPerEvaluation = 20;
+    private int ticks = 0;
+
     public MultiblockBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState,
                                  Class<T> clazz, MultiblockPattern<M> pattern) {
         this(type, blockPos, blockState, clazz, Collections.singleton(pattern));
@@ -67,7 +70,6 @@ public abstract class MultiblockBlockEntity<T extends MultiblockBlockEntity<T, M
         super(type, blockPos, blockState);
         this.clazz = clazz;
         this.patterns = Collections.unmodifiableCollection(patterns);
-        System.out.println("Instancing Multiblock");
         this.evaluationPending = true;
     }
 
@@ -83,8 +85,12 @@ public abstract class MultiblockBlockEntity<T extends MultiblockBlockEntity<T, M
     }
 
     protected void serverTick() {
+        this.ticks++;
         if (this.evaluationPending) {
+            this.ticks = 0;
             this.evaluate();
+        } else if (this.ticks >= ticksPerEvaluation) {
+            this.enqueueEvaluation();
         }
     }
 
@@ -143,12 +149,10 @@ public abstract class MultiblockBlockEntity<T extends MultiblockBlockEntity<T, M
         if (this.level.isClientSide()) {
             return;
         }
-        System.out.println("evaluating");
 
         this.evaluationPending = false;
 
         if (this.membership != null && !this.isMaster()) {
-            System.out.println("not master, delegating: " + this.membership.master);
             this.membership.master.evaluate();
             return;
         } else if (this.membership == null && !this.isMaster()) {
@@ -283,7 +287,6 @@ public abstract class MultiblockBlockEntity<T extends MultiblockBlockEntity<T, M
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        System.out.println("loading tag: " + tag);
         if (tag.getBoolean("master")) {
             this.enqueueEvaluation();
         }
@@ -292,7 +295,6 @@ public abstract class MultiblockBlockEntity<T extends MultiblockBlockEntity<T, M
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        System.out.println("membership: " + this.membership);
         tag.putBoolean("master", this.membership != null && this.membership.master() == this);
     }
 

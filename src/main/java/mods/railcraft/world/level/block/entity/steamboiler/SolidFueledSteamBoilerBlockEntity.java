@@ -24,7 +24,6 @@ public class SolidFueledSteamBoilerBlockEntity extends SteamBoilerBlockEntity {
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        System.out.println("creating solid fueled steam boiler menu");
         return new SolidFueledSteamBoilerMenu(id, inventory, this);
     }
 

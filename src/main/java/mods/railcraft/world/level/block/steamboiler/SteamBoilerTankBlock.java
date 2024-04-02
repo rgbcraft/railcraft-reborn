@@ -46,7 +46,6 @@ public class SteamBoilerTankBlock extends SteamBoilerBlock {
 
     @Override
     public SteamBoilerBlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        System.out.println("new steam boiler tank entity");
         return new SteamBoilerBlockEntity(blockPos, blockState);
     }
 
