@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.level.storage.loot.LootContext;
 
 public abstract class SwitchTrackBlock extends ReversibleOutfittedTrackBlock {
-
     public static final BooleanProperty SWITCHED = BooleanProperty.create("switched");
     public static final EnumProperty<RailShape> SHAPE =
             EnumProperty.create("shape", RailShape.class, RailShape.NORTH_SOUTH, RailShape.EAST_WEST);

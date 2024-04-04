@@ -13,15 +13,14 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 
 @Mixin(FenceBlock.class)
 public class FenceBlockMixin {
-
-  @Inject(method = "connectsTo", at = @At("HEAD"), cancellable = true)
-  public void railcraft$connectToGatedTrack(BlockState blockState, boolean sturdy, Direction face,
-      CallbackInfoReturnable<Boolean> callbackInfo) {
-    if (blockState.getBlock() instanceof GatedTrackBlock) {
-      RailShape railShape = TrackBlock.getRailShapeRaw(blockState);
-      callbackInfo.setReturnValue(face.getAxis() == Direction.Axis.X
-          ? railShape == RailShape.NORTH_SOUTH
-          : railShape == RailShape.EAST_WEST);
+    @Inject(method = "connectsTo", at = @At("HEAD"), cancellable = true)
+    public void railcraft$connectToGatedTrack(BlockState blockState, boolean sturdy, Direction face,
+                                              CallbackInfoReturnable<Boolean> callbackInfo) {
+        if (blockState.getBlock() instanceof GatedTrackBlock) {
+            RailShape railShape = TrackBlock.getRailShapeRaw(blockState);
+            callbackInfo.setReturnValue(face.getAxis() == Direction.Axis.X
+                    ? railShape == RailShape.NORTH_SOUTH
+                    : railShape == RailShape.EAST_WEST);
+        }
     }
-  }
 }
