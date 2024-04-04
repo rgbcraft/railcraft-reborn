@@ -561,64 +561,64 @@ public class RailcraftBlocks {
                             BlockBehaviour.Properties.copy(ADVANCED_ITEM_LOADER.get())));
 
     public static final RegistryObject<AdvancedDetectorBlock> ADVANCED_DETECTOR =
-      deferredRegister.register("advanced_detector",
-          () -> new AdvancedDetectorBlock(BlockBehaviour.Properties.of()
-              .mapColor(MapColor.STONE)
-              .strength(2.0F, 4.5F)
-              .requiresCorrectToolForDrops()
-              .sound(SoundType.METAL)));
+            deferredRegister.register("advanced_detector",
+                    () -> new AdvancedDetectorBlock(BlockBehaviour.Properties.of(Material.STONE)
+                            .strength(2.0F, 4.5F)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.METAL)));
 
-  public static final RegistryObject<AgeDetectorBlock> AGE_DETECTOR =
-      deferredRegister.register("age_detector",
-          () -> new AgeDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<AgeDetectorBlock> AGE_DETECTOR =
+            deferredRegister.register("age_detector",
+                    () -> new AgeDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<AnimalDetectorBlock> ANIMAL_DETECTOR =
-      deferredRegister.register("animal_detector",
-          () -> new AnimalDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<AnimalDetectorBlock> ANIMAL_DETECTOR =
+            deferredRegister.register("animal_detector",
+                    () -> new AnimalDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<AnyDetectorBlock> ANY_DETECTOR =
-      deferredRegister.register("any_detector",
-          () -> new AnyDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<AnyDetectorBlock> ANY_DETECTOR =
+            deferredRegister.register("any_detector",
+                    () -> new AnyDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<EmptyDetectorBlock> EMPTY_DETECTOR =
-      deferredRegister.register("empty_detector",
-          () -> new EmptyDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<EmptyDetectorBlock> EMPTY_DETECTOR =
+            deferredRegister.register("empty_detector",
+                    () -> new EmptyDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<ItemDetectorBlock> ITEM_DETECTOR =
-      deferredRegister.register("item_detector",
-          () -> new ItemDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<ItemDetectorBlock> ITEM_DETECTOR =
+            deferredRegister.register("item_detector",
+                    () -> new ItemDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<LocomotiveDetectorBlock> LOCOMOTIVE_DETECTOR =
-      deferredRegister.register("locomotive_detector",
-          () -> new LocomotiveDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<LocomotiveDetectorBlock> LOCOMOTIVE_DETECTOR =
+            deferredRegister.register("locomotive_detector",
+                    () -> new LocomotiveDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<MobDetectorBlock> MOB_DETECTOR =
-      deferredRegister.register("mob_detector",
-          () -> new MobDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<MobDetectorBlock> MOB_DETECTOR =
+            deferredRegister.register("mob_detector",
+                    () -> new MobDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<PlayerDetectorBlock> PLAYER_DETECTOR =
-      deferredRegister.register("player_detector",
-          () -> new PlayerDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<PlayerDetectorBlock> PLAYER_DETECTOR =
+            deferredRegister.register("player_detector",
+                    () -> new PlayerDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<RoutingDetectorBlock> ROUTING_DETECTOR =
-      deferredRegister.register("routing_detector",
-          () -> new RoutingDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<RoutingDetectorBlock> ROUTING_DETECTOR =
+            deferredRegister.register("routing_detector",
+                    () -> new RoutingDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<SheepDetectorBlock> SHEEP_DETECTOR =
-      deferredRegister.register("sheep_detector",
-          () -> new SheepDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<SheepDetectorBlock> SHEEP_DETECTOR =
+            deferredRegister.register("sheep_detector",
+                    () -> new SheepDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<TankDetectorBlock> TANK_DETECTOR =
-      deferredRegister.register("tank_detector",
-          () -> new TankDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<TankDetectorBlock> TANK_DETECTOR =
+            deferredRegister.register("tank_detector",
+                    () -> new TankDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<TrainDetectorBlock> TRAIN_DETECTOR =
-      deferredRegister.register("train_detector",
-          () -> new TrainDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<TrainDetectorBlock> TRAIN_DETECTOR =
+            deferredRegister.register("train_detector",
+                    () -> new TrainDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
 
-  public static final RegistryObject<VillagerDetectorBlock> VILLAGER_DETECTOR =
-      deferredRegister.register("villager_detector",
-          () -> new VillagerDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));public static final RegistryObject<SwitchTrackActuatorBlock> SWITCH_TRACK_LEVER =
+    public static final RegistryObject<VillagerDetectorBlock> VILLAGER_DETECTOR =
+            deferredRegister.register("villager_detector",
+                    () -> new VillagerDetectorBlock(BlockBehaviour.Properties.copy(ADVANCED_DETECTOR.get())));
+    public static final RegistryObject<SwitchTrackActuatorBlock> SWITCH_TRACK_LEVER =
             deferredRegister.register("switch_track_lever",
                     () -> new SwitchTrackLeverBlock(BlockBehaviour.Properties.of(Material.METAL)
                             .strength(8.0F, 50.0F)

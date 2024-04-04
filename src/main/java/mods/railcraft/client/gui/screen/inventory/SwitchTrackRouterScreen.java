@@ -7,6 +7,7 @@ import mods.railcraft.Railcraft;
 import mods.railcraft.Translations;
 import mods.railcraft.client.gui.widget.button.ButtonTexture;
 import mods.railcraft.client.gui.widget.button.MultiButton;
+import mods.railcraft.gui.widget.Widget;
 import mods.railcraft.network.NetworkChannel;
 import mods.railcraft.network.play.SetSwitchTrackRouterAttributesMessage;
 import mods.railcraft.util.routing.RoutingLogicException;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class SwitchTrackRouterScreen extends RailcraftMenuScreen<SwitchTrackRouterMenu> {
-
     private static final ResourceLocation BACKGROUND_TEXTURE =
             Railcraft.rl("textures/gui/container/routing.png");
     private static final Component ROUTING_TABLE =
@@ -39,7 +39,7 @@ public class SwitchTrackRouterScreen extends RailcraftMenuScreen<SwitchTrackRout
         this.inventoryLabelY = this.imageHeight - 94;
         this.switchTrackRouter = menu.getSwitchTrackRouter();
 
-        this.registerWidgetRenderer(new WidgetRenderer(menu.getErrorWidget()) {
+        this.registerWidgetRenderer(new WidgetRenderer<>(menu.getErrorWidget()) {
             @Override
             public List<Component> getTooltip() {
                 return menu.getSwitchTrackRouter().logicError()

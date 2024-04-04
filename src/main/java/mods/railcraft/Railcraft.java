@@ -94,7 +94,7 @@ public class Railcraft {
     }
 
     public static ResourceLocation rl(String path) {
-        return new ResourceLocation(RailcraftConstants.ID, path);
+        return RailcraftConstants.rl(path);
     }
 
     private final CrowbarHandler crowbarHandler = new CrowbarHandler();
