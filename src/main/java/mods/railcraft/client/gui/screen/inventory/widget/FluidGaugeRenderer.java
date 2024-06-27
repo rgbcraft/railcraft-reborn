@@ -8,10 +8,12 @@ import mods.railcraft.client.gui.screen.inventory.WidgetRenderer;
 import mods.railcraft.client.util.FluidRenderer;
 import mods.railcraft.client.util.RenderUtil;
 import mods.railcraft.gui.widget.FluidGaugeWidget;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class FluidGaugeRenderer extends WidgetRenderer<FluidGaugeWidget> {
 
@@ -38,6 +40,8 @@ public class FluidGaugeRenderer extends WidgetRenderer<FluidGaugeWidget> {
 
         var fluidIcon =
                 FluidRenderer.getFluidTexture(fluidStack, FluidRenderer.FluidType.STILL);
+        System.out.println(fluidIcon);
+        System.out.println("=====================");
         if (fluidIcon == null) {
             return;
         }
@@ -53,7 +57,7 @@ public class FluidGaugeRenderer extends WidgetRenderer<FluidGaugeWidget> {
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderColor(red, green, blue, alpha);
-        RenderSystem.setShaderTexture(0, fluidIcon.getName());
+        RenderSystem.setShaderTexture(0, new ResourceLocation(fluidIcon.getNamespace(), "textures/" + fluidIcon.getPath() + ".png"));
         for (var col = 0; col < this.widget.w / 16; col++) {
             for (var row = 0; row <= this.widget.h / 16; row++) {
                 component.blit(poseStack, centreX + this.widget.x + col * 16, centreY + this.widget.y + row * 16 - 1,

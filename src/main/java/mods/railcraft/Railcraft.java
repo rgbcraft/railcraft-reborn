@@ -82,9 +82,6 @@ import java.io.IOException;
 
 @Mod(RailcraftConstants.ID)
 public class Railcraft {
-
-    public static final boolean BETA = true;
-
     static {
         FuelUtil._setFuelManager(new FuelManagerImpl());
         Charge._setZapEffectProvider(new ZapEffectProviderImpl());
