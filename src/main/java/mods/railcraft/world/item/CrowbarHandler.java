@@ -1,6 +1,7 @@
 package mods.railcraft.world.item;
 
 import java.util.Map;
+
 import com.google.common.collect.MapMaker;
 import mods.railcraft.RailcraftConfig;
 import mods.railcraft.Translations;
@@ -24,104 +25,104 @@ import net.minecraft.world.item.ItemStack;
 
 public class CrowbarHandler {
 
-  public static final float SMACK_VELOCITY = 0.07f;
+    public static final float SMACK_VELOCITY = 0.07f;
 
-  private static final Map<Player, RollingStock> linkMap =
-      new MapMaker()
-          .weakKeys()
-          .weakValues()
-          .makeMap();
+    private static final Map<Player, RollingStock> linkMap =
+            new MapMaker()
+                    .weakKeys()
+                    .weakValues()
+                    .makeMap();
 
-  public InteractionResult handleInteract(AbstractMinecart cart, Player player,
-      InteractionHand hand) {
-    var stack = player.getItemInHand(hand);
-    if (stack.isEmpty() || !(stack.getItem() instanceof Crowbar crowbar)) {
-      return InteractionResult.PASS;
+    public InteractionResult handleInteract(AbstractMinecart cart, Player player,
+                                            InteractionHand hand) {
+        var stack = player.getItemInHand(hand);
+        if (stack.isEmpty() || !(stack.getItem() instanceof Crowbar crowbar)) {
+            return InteractionResult.PASS;
+        }
+
+        if (player.getLevel().isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if ((stack.getItem() instanceof SeasonsCrowbarItem)
+                && cart instanceof SeasonalCart seasonalCart
+                && RailcraftConfig.COMMON.seasonsEnabled.get()) {
+            var season = SeasonsCrowbarItem.getSeason(stack);
+            seasonalCart.setSeason(season);
+            RailcraftCriteriaTriggers.SEASON_SET.trigger((ServerPlayer) player, cart, season);
+            return InteractionResult.CONSUME;
+        }
+
+        if (crowbar.canLink(player, hand, stack, cart)) {
+            this.linkCart(player, hand, stack, cart, crowbar);
+            return InteractionResult.CONSUME;
+        } else if (crowbar.canBoost(player, hand, stack, cart)) {
+            this.boostCart(player, hand, stack, cart, crowbar);
+            return InteractionResult.CONSUME;
+        }
+
+        return InteractionResult.PASS;
     }
 
-    if (player.getLevel().isClientSide()) {
-      return InteractionResult.SUCCESS;
+    private void linkCart(Player player, InteractionHand hand, ItemStack stack,
+                          AbstractMinecart cart, Crowbar crowbar) {
+        var extension = RollingStock.getOrThrow(cart);
+        var last = linkMap.remove(player);
+        if (last == null || !last.entity().isAlive()) {
+            linkMap.put(player, extension);
+            var message = Component.translatable(Translations.Tips.CROWBAR_LINK_STARTED)
+                    .withStyle(ChatFormatting.LIGHT_PURPLE);
+            player.displayClientMessage(message, true);
+            return;
+        }
+
+        if (extension.unlink(last)) {
+            var message = Component.translatable(Translations.Tips.CROWBAR_LINK_BROKEN)
+                    .withStyle(ChatFormatting.LIGHT_PURPLE);
+            player.displayClientMessage(message, true);
+        } else {
+            if (!last.link(extension)) {
+                var message = Component.translatable(Translations.Tips.CROWBAR_LINK_FAILED)
+                        .withStyle(ChatFormatting.RED);
+                player.displayClientMessage(message, true);
+                return;
+            }
+
+            if (!player.getLevel().isClientSide()) {
+                RailcraftCriteriaTriggers.CART_LINK.trigger((ServerPlayer) player, last.entity(), cart);
+            }
+
+            var message = Component.translatable(Translations.Tips.CROWBAR_LINK_CREATED)
+                    .withStyle(ChatFormatting.GREEN);
+            player.displayClientMessage(message, true);
+        }
+
+        crowbar.onLink(player, hand, stack, cart);
     }
 
-    if ((stack.getItem() instanceof SeasonsCrowbarItem)
-        && cart instanceof SeasonalCart seasonalCart
-        && RailcraftConfig.COMMON.seasonsEnabled.get()) {
-      var season = SeasonsCrowbarItem.getSeason(stack);
-      seasonalCart.setSeason(season);
-      RailcraftCriteriaTriggers.SEASON_SET.trigger((ServerPlayer) player, cart, season);
-      return InteractionResult.CONSUME;
+    private void boostCart(Player player, InteractionHand hand, ItemStack stack,
+                           AbstractMinecart cart, Crowbar crowbar) {
+        player.causeFoodExhaustion(.25F);
+
+        if (player.getVehicle() != null || cart instanceof TunnelBore) {
+            return;
+        }
+        if (cart instanceof Directional directional) {
+            directional.reverse();
+        } else if (cart instanceof TrackRemover trackRemover) {
+            trackRemover.setMode(trackRemover.mode().next());
+        } else {
+            int lvl = stack.getEnchantmentLevel(RailcraftEnchantments.SMACK.get());
+            if (lvl == 0) {
+                MinecartUtil.smackCart(cart, player, SMACK_VELOCITY);
+            }
+            var extension = RollingStock.getOrThrow(cart);
+            var train = extension.train();
+            var smackVelocity = (SMACK_VELOCITY * (float) Math.pow(1.7, lvl))
+                    / (float) Math.pow(train.size(), 1D / (1 + lvl));
+            train.entities().forEach(
+                    each -> MinecartUtil.smackCart(cart, each, player, smackVelocity));
+        }
+        crowbar.onBoost(player, hand, stack, cart);
     }
-
-    if (crowbar.canLink(player, hand, stack, cart)) {
-      this.linkCart(player, hand, stack, cart, crowbar);
-      return InteractionResult.CONSUME;
-    } else if (crowbar.canBoost(player, hand, stack, cart)) {
-      this.boostCart(player, hand, stack, cart, crowbar);
-      return InteractionResult.CONSUME;
-    }
-
-    return InteractionResult.PASS;
-  }
-
-  private void linkCart(Player player, InteractionHand hand, ItemStack stack,
-      AbstractMinecart cart, Crowbar crowbar) {
-    var extension = RollingStock.getOrThrow(cart);
-    var last = linkMap.remove(player);
-    if (last == null || !last.entity().isAlive()) {
-      linkMap.put(player, extension);
-      var message = Component.translatable(Translations.Tips.CROWBAR_LINK_STARTED)
-          .withStyle(ChatFormatting.LIGHT_PURPLE);
-      player.displayClientMessage(message, true);
-      return;
-    }
-
-    if (extension.unlink(last)) {
-      var message = Component.translatable(Translations.Tips.CROWBAR_LINK_BROKEN)
-          .withStyle(ChatFormatting.LIGHT_PURPLE);
-      player.displayClientMessage(message, true);
-    } else {
-      if (!last.link(extension)) {
-        var message = Component.translatable(Translations.Tips.CROWBAR_LINK_FAILED)
-            .withStyle(ChatFormatting.RED);
-        player.displayClientMessage(message, true);
-        return;
-      }
-
-      if (!player.getLevel().isClientSide()) {
-        RailcraftCriteriaTriggers.CART_LINK.trigger((ServerPlayer) player, last.entity(), cart);
-      }
-
-      var message = Component.translatable(Translations.Tips.CROWBAR_LINK_CREATED)
-          .withStyle(ChatFormatting.GREEN);
-      player.displayClientMessage(message, true);
-    }
-
-    crowbar.onLink(player, hand, stack, cart);
-  }
-
-  private void boostCart(Player player, InteractionHand hand, ItemStack stack,
-      AbstractMinecart cart, Crowbar crowbar) {
-    player.causeFoodExhaustion(.25F);
-
-    if (player.getVehicle() != null || cart instanceof TunnelBore) {
-      return;
-    }
-    if (cart instanceof Directional directional) {
-      directional.reverse();
-    } else if (cart instanceof TrackRemover trackRemover) {
-      trackRemover.setMode(trackRemover.mode().next());
-    } else {
-      int lvl = stack.getEnchantmentLevel(RailcraftEnchantments.SMACK.get());
-      if (lvl == 0) {
-        MinecartUtil.smackCart(cart, player, SMACK_VELOCITY);
-      }
-      var extension = RollingStock.getOrThrow(cart);
-      var train = extension.train();
-      var smackVelocity = (SMACK_VELOCITY * (float) Math.pow(1.7, lvl))
-          / (float) Math.pow(train.size(), 1D / (1 + lvl));
-      train.entities().forEach(
-          each -> MinecartUtil.smackCart(cart, each, player, smackVelocity));
-    }
-    crowbar.onBoost(player, hand, stack, cart);
-  }
 }

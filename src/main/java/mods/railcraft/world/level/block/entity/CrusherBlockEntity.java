@@ -2,6 +2,7 @@ package mods.railcraft.world.level.block.entity;
 
 import java.util.List;
 
+import net.minecraft.world.damagesource.DamageSource;
 import org.jetbrains.annotations.Nullable;
 import it.unimi.dsi.fastutil.chars.CharList;
 import mods.railcraft.Translations.Container;
@@ -85,6 +86,7 @@ public class CrusherBlockEntity extends MultiblockBlockEntity<CrusherBlockEntity
                                 .forEach(livingEntity -> {
                                     energyCap.ifPresent(energyStorage -> {
                                         if (energyStorage.getEnergyStored() >= KILLING_POWER_COST) {
+                                            livingEntity.hurt(DamageSource.ANVIL, 5);
 //                      livingEntity.hurt(RailcraftDamageSources.crusher(level.registryAccess()), 5);
                                             energyStorage.extractEnergy(KILLING_POWER_COST, false);
                                         }
