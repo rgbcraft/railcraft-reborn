@@ -45,7 +45,13 @@ public enum SignalAspect implements StringRepresentable {
    * Can't happen, really it can't (or shouldn't). Only used when rendering blink states (for the
    * texture offset).
    */
-  OFF("off", 0);
+  OFF("off", 0),
+	
+  // Verde lampeggiante, FS
+  BLINK_GREEN("blink_green", 3),
+  
+  // Verde lampeggiante Deviata 100
+  BLINK_GREEN_ALT("blink_green_alt", 3);
 
   private static final SignalAspect[] VALUES = values();
 
@@ -99,7 +105,7 @@ public enum SignalAspect implements StringRepresentable {
    * @return true if blinks
    */
   public boolean isBlinkAspect() {
-    return this == BLINK_YELLOW || this == BLINK_RED;
+    return this == BLINK_YELLOW || this == BLINK_RED || this == BLINK_GREEN || this == BLINK_GREEN_ALT;
   }
 
   /**
@@ -117,13 +123,26 @@ public enum SignalAspect implements StringRepresentable {
    *
    * @return the SignalAspect that should be rendered
    */
+  
+  /* UN PO' DI SPIEGAZIONE: Il BLINK_GREEN_ALT è un verde lampeggiante che ha stati invertiti, ovvero:
+   * BLINK_GREEN: primo tick VERDE, dopo 16 tick OFF, dopo 16 tick ripeti
+   * BLINK_GREEN_ALT: primo tick OFF, dopo 16 tick VERDE, dopo 16 tick ripeti
+   * 
+   * serve per l'avviso deviata 100km/h
+   */
   public SignalAspect getDisplayAspect() {
-    if (this.isOffState())
+    if (this.isOffState() && this != BLINK_GREEN_ALT)
       return OFF;
+    if (this.isOffState() && this == BLINK_GREEN_ALT)
+    	return GREEN;
+    if (!this.isOffState() && this == BLINK_GREEN_ALT)
+    	return OFF;
     if (this == BLINK_YELLOW)
       return YELLOW;
     if (this == BLINK_RED)
       return RED;
+    if (this == BLINK_GREEN)
+      return GREEN;
     return this;
   }
 
