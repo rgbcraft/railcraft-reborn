@@ -782,6 +782,8 @@
   "season.railcraft.none": "None",
   "signal.railcraft.aspect.blink_red": "Blink Red",
   "signal.railcraft.aspect.blink_yellow": "Blink Yellow",
+  "signal.railcraft.aspect.blink_green": "Blink Green",
+  "signal.railcraft.aspect.blink_green_alt": "Blink Green (Alt)",
   "signal.railcraft.aspect.green": "Green",
   "signal.railcraft.aspect.off": "Off",
   "signal.railcraft.aspect.red": "Red",
