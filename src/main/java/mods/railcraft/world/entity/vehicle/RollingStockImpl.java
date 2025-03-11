@@ -348,10 +348,15 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
     @Override
     public void checkHighSpeed(BlockPos blockPos) {
         var currentMotion = this.minecart.getDeltaMovement();
-        if (this.highSpeed) {
-            HighSpeedTrackUtil.checkSafetyAndExplode(this.level(), blockPos, this.minecart);
-            return;
-        }
+
+        /* Start Endxxr patch
+
+        //if (this.highSpeed) {
+        //    HighSpeedTrackUtil.checkSafetyAndExplode(this.level(), blockPos, this.minecart);
+        //    return;
+        //}
+
+        End Endxxr patch */
 
         if (!HighSpeedTrackUtil.isTrackSafeForHighSpeed(this.level(), blockPos, this.minecart)) {
             this.limitSpeed();
@@ -511,10 +516,15 @@ public class RollingStockImpl implements RollingStock, INBTSerializable<Compound
         if (this.highSpeed) {
             if (MinecartUtil.cartVelocityIsLessThan(this.entity(), EXPLOSION_SPEED_THRESHOLD)) {
                 this.highSpeed = false;
-            } else if (this.launchState == LaunchState.LANDED) {
+            }
+            /* Start Endxxr's patch
+            else if (this.launchState == LaunchState.LANDED) {
                 HighSpeedTrackUtil.checkSafetyAndExplode(this.level(),
                         this.minecart.blockPosition(), this.entity());
             }
+
+            End Endxxr's patch*/
+
         }
 
         // Fix flip

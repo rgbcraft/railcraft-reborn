@@ -854,6 +854,7 @@ public class RailcraftLanguageProvider extends LanguageProvider {
         this.addBlock(RailcraftBlocks.IRON_LOCOMOTIVE_TRACK, "Iron Locomotive Track");
         this.addBlock(RailcraftBlocks.IRON_THROTTLE_TRACK, "Iron Throttle Track");
         this.addBlock(RailcraftBlocks.IRON_ROUTING_TRACK, "Iron Routing Track");
+        this.addBlock(RailcraftBlocks.FENIX_TRACK, "Fenix Track");
 
         this.addBlock(RailcraftBlocks.ELEVATOR_TRACK, "Elevator Track");
     }

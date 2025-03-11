@@ -560,6 +560,8 @@ public class RailcraftBlockModelProvider extends BlockStateProvider {
                 RailcraftBlocks.HIGH_SPEED_ELECTRIC_WHISTLE_TRACK.get(),
                 RailcraftBlocks.HIGH_SPEED_ELECTRIC_LOCOMOTIVE_TRACK.get(),
                 RailcraftBlocks.HIGH_SPEED_ELECTRIC_THROTTLE_TRACK.get());
+
+        this.simpleBlock(RailcraftBlocks.FENIX_TRACK.get());
     }
 
     private void createStrengthenedGlass(Block block) {
