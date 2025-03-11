@@ -428,6 +428,12 @@ public class RailcraftRecipeProvider extends RecipeProvider {
                 RailcraftItems.HIGH_SPEED_RAIL.get(), RailcraftItems.STONE_RAILBED.get());
 
 
+        ShapelessRecipeBuilder.shapeless(RailcraftItems.FENIX_TRACK.get())
+                .requires(Tags.Items.TOOLS_AXES)
+                .requires(Items.RAIL)
+                .unlockedBy(getHasName(Items.RAIL), has(Tags.Items.TOOLS_AXES))
+                .save(consumer);
+
         ShapedRecipeBuilder
                 .shaped(RailcraftItems.HIGH_SPEED_ELECTRIC_WYE_TRACK.get(), 16)
                 .pattern("aba")
@@ -470,6 +476,12 @@ public class RailcraftRecipeProvider extends RecipeProvider {
                 .requires(baseTrack)
                 .unlockedBy(getHasName(kit), has(kit))
                 .save(finishedRecipe);
+    }
+
+    private static void tracks(Consumer<FinishedRecipe> finishedRecipe, Item result,
+                               Ingredient kit, Item baseTrack) {
+
+
     }
 
     private static void wyeTracks(Consumer<FinishedRecipe> finishedRecipe, Item result,

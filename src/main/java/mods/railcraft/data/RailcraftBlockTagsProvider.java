@@ -133,7 +133,8 @@ public class RailcraftBlockTagsProvider extends BlockTagsProvider {
                         RailcraftBlocks.IRON_WHISTLE_TRACK.get(),
                         RailcraftBlocks.IRON_LOCOMOTIVE_TRACK.get(),
                         RailcraftBlocks.IRON_THROTTLE_TRACK.get(),
-                        RailcraftBlocks.IRON_ROUTING_TRACK.get());
+                        RailcraftBlocks.IRON_ROUTING_TRACK.get(),
+                        RailcraftBlocks.FENIX_TRACK.get());
         this.tag(RailcraftTags.Blocks.REINFORCED_TRACK)
                 .add(RailcraftBlocks.REINFORCED_TRACK.get(),
                         RailcraftBlocks.REINFORCED_LOCKING_TRACK.get(),

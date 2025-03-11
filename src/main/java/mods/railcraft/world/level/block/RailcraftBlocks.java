@@ -59,16 +59,7 @@ import mods.railcraft.world.level.block.tank.IronTankWallBlock;
 import mods.railcraft.world.level.block.tank.SteelTankGaugeBlock;
 import mods.railcraft.world.level.block.tank.SteelTankValveBlock;
 import mods.railcraft.world.level.block.tank.SteelTankWallBlock;
-import mods.railcraft.world.level.block.track.AbandonedTrackBlock;
-import mods.railcraft.world.level.block.track.ElectricTrackBlock;
-import mods.railcraft.world.level.block.track.ElevatorTrackBlock;
-import mods.railcraft.world.level.block.track.ForceTrackBlock;
-import mods.railcraft.world.level.block.track.HighSpeedElectricTrackBlock;
-import mods.railcraft.world.level.block.track.HighSpeedTrackBlock;
-import mods.railcraft.world.level.block.track.ReinforcedTrackBlock;
-import mods.railcraft.world.level.block.track.StrapIronTrackBlock;
-import mods.railcraft.world.level.block.track.TrackConstants;
-import mods.railcraft.world.level.block.track.TrackTypes;
+import mods.railcraft.world.level.block.track.*;
 import mods.railcraft.world.level.block.track.actuator.SwitchTrackActuatorBlock;
 import mods.railcraft.world.level.block.track.actuator.SwitchTrackLeverBlock;
 import mods.railcraft.world.level.block.track.actuator.SwitchTrackMotorBlock;
@@ -937,6 +928,15 @@ public class RailcraftBlocks {
                             .strength(TrackConstants.HARDNESS, TrackConstants.RESISTANCE)
                             .sound(SoundType.METAL)));
 
+    // Start Endxxr Patch
+    public static final RegistryObject<FenixTrackBlock> FENIX_TRACK =
+            deferredRegister.register("fenix_track",
+                    () -> new FenixTrackBlock(BlockBehaviour.Properties.of(Material.METAL)
+                            .noCollission()
+                            .strength(TrackConstants.HARDNESS, TrackConstants.RESISTANCE)
+                            .sound(SoundType.METAL)));
+    // End
+
     public static final RegistryObject<TransitionTrackBlock> HIGH_SPEED_TRANSITION_TRACK =
             deferredRegister.register("high_speed_transition_track",
                     () -> new TransitionTrackBlock(TrackTypes.HIGH_SPEED,
@@ -1378,6 +1378,7 @@ public class RailcraftBlocks {
                             .noCollission()
                             .strength(1.05F)
                             .sound(SoundType.METAL)));
+
 
     public static final RegistryObject<FirestoneBlock> FIRESTONE_ORE =
             deferredRegister.register("firestone_ore",

@@ -688,6 +688,9 @@ public class RailcraftItems {
     public static final RegistryObject<Item> HIGH_SPEED_TRACK =
             blockItem("high_speed_track", RailcraftBlocks.HIGH_SPEED_TRACK);
 
+    public static final RegistryObject<Item> FENIX_TRACK =
+            blockItem("fenix_track", RailcraftBlocks.FENIX_TRACK);
+
     public static final RegistryObject<Item> HIGH_SPEED_TRANSITION_TRACK =
             blockItem("high_speed_transition_track", RailcraftBlocks.HIGH_SPEED_TRANSITION_TRACK);
 
